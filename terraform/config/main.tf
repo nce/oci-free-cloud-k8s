@@ -17,3 +17,7 @@ module "externaldns" {
 module "dex" {
   source = "./modules/dex"
 }
+
+module "argocd" {
+  source = "./modules/argocd"
+}

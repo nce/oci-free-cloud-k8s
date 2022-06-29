@@ -15,8 +15,8 @@ resource "helm_release" "dex" {
 envFrom:
  - secretRef:
      name: dex-github-connector
-#- secretRef:
-#  name: dex-argocd-client
+ - secretRef:
+     name: dex-argocd-client
 replicaCount: 2
 https:
   enabled: false
@@ -37,7 +37,7 @@ ingress:
       - login.klangregen.de
       secretName: dex-cert
 config:
-  issuer: https://login.klangregen.de/dex
+  issuer: https://login.klangregen.de/dex/
   # The storage configuration determines where dex stores its state. Supported
   # options include SQL flavors and Kubernetes third party resources.
   #
@@ -60,7 +60,7 @@ config:
   staticClients:
   - IDEnv: client-id
     redirectURIs:
-    -  https://argo.klangregen.de/auth/callback
+    -  https://argocd.klangregen.de/auth/callback
     name: 'Argocd'
     secretEnv: client-secret
   connectors:
