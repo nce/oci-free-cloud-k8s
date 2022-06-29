@@ -50,6 +50,8 @@ kind: Ingress
 metadata:
   name: echo-ingress
   annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+    acme.cert-manager.io/http01-edit-in-place: "true"
     kubernetes.io/ingress.class: nginx
 spec:
   rules:
@@ -63,5 +65,9 @@ spec:
               name: echo1
               port:
                 number: 80
+  tls:
+  - hosts:
+    - echo.klangregen.de
+    secretName: echo-cert
 YAML
 }
