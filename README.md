@@ -4,13 +4,7 @@ This repo utilizes the [always free tier](https://blogs.oracle.com/cloud-infrast
 
 Inital setup is inspired by this great tutorial: https://arnoldgalovics.com/free-kubernetes-oracle-cloud/
 
-#### kubeconfig
-
-```
-oci ce cluster create-kubeconfig --cluster-id $(terraform output --raw k8s-cluster-id) --file ~/.kube/oci_cloud.kubeconfig --region eu-frankfurt-1 --token-version 2.0.0 --kube-endpoint PUBLIC_ENDPOINT
-```
-
-## tooling
+## Tooling
 - [x] K8s control plane
 - [x] Worker Nodes
 - [x] Ingress  
@@ -20,3 +14,16 @@ oci ce cluster create-kubeconfig --cluster-id $(terraform output --raw k8s-clust
 - [x] External DNS  
   with sync to the oci dns management
 - [ ] ArgoCD
+
+## Renovate
+Moving to variables, might not be worth it:
+* https://github.com/renovatebot/renovate/discussions/16052
+
+# Setup
+#### kubeconfig
+
+```
+oci ce cluster create-kubeconfig --cluster-id $(terraform output --raw k8s-cluster-id) --file ~/.kube/oci_cloud.kubeconfig --region eu-frankfurt-1 --token-version 2.0.0 --kube-endpoint PUBLIC_ENDPOINT
+```
+
+
