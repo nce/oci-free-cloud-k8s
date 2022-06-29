@@ -58,6 +58,11 @@ config:
   #
   # If this option isn't chosen clients may be added through the gRPC API.
   staticClients:
+  - id: some_id
+    name: Grafana
+    secret: some_secret
+    redirectURIs:
+    -  https://monitoring.klangregen.de/login/generic_oauth
   - IDEnv: client-id
     redirectURIs:
     -  https://argocd.klangregen.de/auth/callback

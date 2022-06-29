@@ -13,10 +13,10 @@ Inital setup is inspired by this great tutorial: https://arnoldgalovics.com/free
   with letsencrypt
 - [x] External DNS  
   with sync to the oci dns management
-- [ ] Dex as OIDC Provider with github
-- [ ] ArgoCD
+- [x] Dex as OIDC Provider with github
+- [x] ArgoCD
 - [ ] Storage
-- [ ] Grafana
+- [x] Grafana
 
 ## Renovate
 Moving to variables, might not be worth it:
