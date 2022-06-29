@@ -2,18 +2,18 @@ module "ingress" {
   source = "./modules/nginx-ingress"
 
   compartment_id = var.compartment_id
-  chart_version  = var.nginx_ingress_version
 }
 
 module "certmanager" {
   source = "./modules/cert-manager"
-
-  chart_version = var.cert_manager_version
 }
 
 module "externaldns" {
   source = "./modules/external-dns"
 
   compartment_id = var.compartment_id
-  chart_version  = var.external_dns_version
+}
+
+module "dex" {
+  source = "./modules/dex"
 }
