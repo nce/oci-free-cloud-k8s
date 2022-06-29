@@ -10,9 +10,13 @@ Inital setup is inspired by this great tutorial: https://arnoldgalovics.com/free
 oci ce cluster create-kubeconfig --cluster-id $(terraform output --raw k8s-cluster-id) --file ~/.kube/oci_cloud.kubeconfig --region eu-frankfurt-1 --token-version 2.0.0 --kube-endpoint PUBLIC_ENDPOINT
 ```
 
-## Projectstatus
+## tooling
 - [x] K8s control plane
 - [x] Worker Nodes
-- [ ] Ingress
+- [x] Ingress  
+  nginx-ingress controller
+- [x] Certmanager  
+  with letsencrypt
+- [x] External DNS  
+  with sync to the oci dns management
 - [ ] ArgoCD
-- [ ] Certmanager

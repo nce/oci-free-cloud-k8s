@@ -32,5 +32,11 @@ variable "cert_manager_version" {
   type        = string
 
   default = "v1.8.2"
+}
 
+variable "external_dns_version" {
+  description = "Version of the external_dns helm chart"
+  type        = string
+
+  default = "1.9.0"
 }

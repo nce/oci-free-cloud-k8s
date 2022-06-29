@@ -11,6 +11,7 @@ resource "helm_release" "nginx_ingress" {
   lint             = true
   timeout          = 120
 
+  # https://github.com/oracle/oci-cloud-controller-manager/blob/master/docs/load-balancer-annotations.md
   values = [<<YAML
 controller:
   service:

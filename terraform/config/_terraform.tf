@@ -7,12 +7,17 @@ terraform {
 
     kubectl = {
       source  = "gavinbunney/kubectl"
-      version = "~> 1.13"
+      version = "~> 1"
     }
 
     helm = {
       source  = "hashicorp/helm"
-      version = "~> 2.5"
+      version = "~> 2"
+    }
+
+    tls = {
+      source  = "hashicorp/tls"
+      version = "~> 3"
     }
   }
 }

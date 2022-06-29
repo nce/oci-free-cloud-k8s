@@ -1,0 +1,8 @@
+auth:
+  region: eu-frankfurt-1
+  tenancy: ${compartment_id}
+  user: ${user_id}
+  key: |
+    ${trimspace(indent(4, private_key))}
+  fingerprint: ${fingerprint}
+compartment: ${compartment_id}
