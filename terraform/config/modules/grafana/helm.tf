@@ -27,8 +27,8 @@ grafana.ini:
     enabled: true
     name: Dex
     allow_sign_up: true
-    client_id: some_id
-    client_secret: some_secret
+    client_id: $__file{/etc/secrets/dex_grafana_client/client-id}
+    client_secret: $__file{/etc/secrets/dex_grafana_client/client-secret}
     scopes: openid profile email groups
     ;empty_scopes: false
     email_attribute_path: email
@@ -37,6 +37,12 @@ grafana.ini:
     token_url: https://login.klangregen.de/dex/token
     api_url: https://login.klangregen.de/dex/userinfo
 
+extraSecretMounts:
+  - name: dex-grafana-client
+    secretName: dex-grafana-client
+    defaultMode: 0440
+    mountPath: /etc/secrets/dex_grafana_client
+    readOnly: true
 ingress:
   enabled: true
   hosts:

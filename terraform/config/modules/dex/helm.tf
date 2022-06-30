@@ -17,6 +17,8 @@ envFrom:
      name: dex-github-connector
  - secretRef:
      name: dex-argocd-client
+ - secretRef:
+     name: dex-grafana-client
 replicaCount: 2
 https:
   enabled: false
@@ -58,16 +60,16 @@ config:
   #
   # If this option isn't chosen clients may be added through the gRPC API.
   staticClients:
-  - id: some_id
-    name: Grafana
-    secret: some_secret
+  - name: Grafana
+    IDEnv: grafana.client-id
+    secretEnv: grafana.client-secret
     redirectURIs:
     -  https://monitoring.klangregen.de/login/generic_oauth
-  - IDEnv: client-id
+  - name: Argocd
+    IDEnv: client-id
+    secretEnv: client-secret
     redirectURIs:
     -  https://argocd.klangregen.de/auth/callback
-    name: 'Argocd'
-    secretEnv: client-secret
   connectors:
   - type: github
     # Required field for connector id.
