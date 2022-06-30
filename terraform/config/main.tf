@@ -24,4 +24,6 @@ module "argocd" {
 
 module "grafana" {
   source = "./modules/grafana"
+
+  compartment_id = var.compartment_id
 }

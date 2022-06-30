@@ -14,9 +14,9 @@ Inital setup is inspired by this great tutorial: https://arnoldgalovics.com/free
 - [x] External DNS  
   with sync to the oci dns management
 - [x] Dex as OIDC Provider with github
-- [x] ArgoCD
+- [x] ArgoCD with Dex Login
 - [ ] Storage
-- [x] Grafana
+- [x] Grafana with Dex Login
 
 ## Renovate
 Moving to variables, might not be worth it:
@@ -29,4 +29,5 @@ Moving to variables, might not be worth it:
 oci ce cluster create-kubeconfig --cluster-id $(terraform output --raw k8s-cluster-id) --file ~/.kube/oci_cloud.kubeconfig --region eu-frankfurt-1 --token-version 2.0.0 --kube-endpoint PUBLIC_ENDPOINT
 ```
 
-
+# Issues
+* Grafana has no oci datasource bc oci plugin is [not build for arm64](https://github.com/oracle/oci-grafana-metrics/issues/110)

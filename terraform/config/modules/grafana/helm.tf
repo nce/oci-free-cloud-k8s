@@ -23,6 +23,7 @@ grafana.ini:
 
   auth:
     disable_login_form: true
+
   auth.generic_oauth:
     enabled: true
     name: Dex
@@ -36,6 +37,7 @@ grafana.ini:
     auth_url: https://login.klangregen.de/dex/auth
     token_url: https://login.klangregen.de/dex/token
     api_url: https://login.klangregen.de/dex/userinfo
+    role_attribute_path: contains(groups[*], 'nce-acme:admin') && 'Admin' || 'Viewer'
 
 extraSecretMounts:
   - name: dex-grafana-client
@@ -43,6 +45,10 @@ extraSecretMounts:
     defaultMode: 0440
     mountPath: /etc/secrets/dex_grafana_client
     readOnly: true
+
+#plugins:
+#  - oci-metrics-datasource
+
 ingress:
   enabled: true
   hosts:
