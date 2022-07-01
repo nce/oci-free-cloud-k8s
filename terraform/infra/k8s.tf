@@ -29,27 +29,31 @@ resource "oci_containerengine_node_pool" "k8s_node_pool" {
   compartment_id     = var.compartment_id
   kubernetes_version = var.kubernetes_version
   name               = "k8s-node-pool"
+
   node_config_details {
     placement_configs {
       availability_domain = data.oci_identity_availability_domains.ads.availability_domains[0].name
       subnet_id           = oci_core_subnet.vcn_private_subnet.id
     }
+
     placement_configs {
       availability_domain = data.oci_identity_availability_domains.ads.availability_domains[1].name
       subnet_id           = oci_core_subnet.vcn_private_subnet.id
     }
+
     placement_configs {
       availability_domain = data.oci_identity_availability_domains.ads.availability_domains[2].name
       subnet_id           = oci_core_subnet.vcn_private_subnet.id
     }
-    size = 3
+
+    size = var.kubernetes_worker_nodes
   }
 
   node_shape = "VM.Standard.A1.Flex"
 
   node_shape_config {
-    memory_in_gbs = 6
-    ocpus         = 1
+    memory_in_gbs = 12
+    ocpus         = 2
   }
   node_source_details {
     image_id    = var.image_id

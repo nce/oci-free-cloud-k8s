@@ -25,6 +25,13 @@ variable "kubernetes_version" {
   default = "v1.23.4"
 }
 
+variable "kubernetes_worker_nodes" {
+  description = "Worker node count"
+  type        = number
+
+  default = 2
+}
+
 # TODO: search for latest image
 variable "image_id" {
   # https://docs.oracle.com/en-us/iaas/images/all/?search=aarch64
