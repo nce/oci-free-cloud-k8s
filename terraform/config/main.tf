@@ -27,3 +27,8 @@ module "grafana" {
 
   compartment_id = var.compartment_id
 }
+
+module "longhorn" {
+  source = "./modules/longhorn"
+}
+
