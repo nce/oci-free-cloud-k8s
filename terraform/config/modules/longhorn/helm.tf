@@ -9,9 +9,11 @@ resource "helm_release" "longhorn" {
   atomic           = true
   cleanup_on_fail  = true
   lint             = true
-  timeout          = 60
+  timeout          = 110
 
   values = [<<YAML
+persistence:
+  defaultClassReplicaCount: 2
 ingress:
   enabled: true
   tls: true

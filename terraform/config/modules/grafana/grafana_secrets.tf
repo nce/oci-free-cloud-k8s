@@ -4,6 +4,11 @@ resource "random_password" "dex_grafana_client" {
 }
 
 resource "kubectl_manifest" "dex_grafana_client" {
+
+  depends_on = [
+    helm_release.grafana
+  ]
+
   yaml_body = <<YAML
 apiVersion: v1
 kind: Secret

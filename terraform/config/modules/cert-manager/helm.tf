@@ -11,9 +11,6 @@ resource "helm_release" "cert-manager" {
   lint             = true
   timeout          = 60
 
-  #  depends_on = [
-  #  kubectl_manifest.cert_manager_crds
-  #]
   values = [<<YAML
 installCRDs: true
 YAML

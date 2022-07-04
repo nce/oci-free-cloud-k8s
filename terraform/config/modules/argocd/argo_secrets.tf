@@ -4,6 +4,10 @@ resource "random_password" "dex_argocd_client" {
 }
 
 resource "kubectl_manifest" "dex_argocd_client" {
+  depends_on = [
+    helm_release.argocd
+  ]
+
   yaml_body = <<YAML
 apiVersion: v1
 kind: Secret

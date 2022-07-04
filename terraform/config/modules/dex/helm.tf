@@ -9,7 +9,7 @@ resource "helm_release" "dex" {
   atomic           = true
   cleanup_on_fail  = true
   lint             = true
-  timeout          = 60
+  timeout          = 120
 
   values = [<<YAML
 envFrom:
