@@ -19,7 +19,8 @@ The initial setup is inspired by this great tutorial: https://arnoldgalovics.com
   with sync to the oci dns management
 - [x] Dex as OIDC Provider with github
 - [x] ArgoCD with Dex Login
-- [ ] Storage
+- [x] Storage  
+  with longhorn (rook/ceph & piraeus didnt work out)
 - [x] Grafana with Dex Login
 
 ## Renovate

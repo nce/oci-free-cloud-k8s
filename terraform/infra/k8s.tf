@@ -30,6 +30,10 @@ resource "oci_containerengine_node_pool" "k8s_node_pool" {
   kubernetes_version = var.kubernetes_version
   name               = "k8s-node-pool"
 
+  node_metadata = {
+    user_data = base64encode(file("files/node-pool-init.sh"))
+  }
+
   node_config_details {
     placement_configs {
       availability_domain = data.oci_identity_availability_domains.ads.availability_domains[0].name
