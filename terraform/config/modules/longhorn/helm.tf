@@ -12,6 +12,8 @@ resource "helm_release" "longhorn" {
   timeout          = 110
 
   values = [<<YAML
+defaultSettings:
+  storageMinimalAvailablePercentage: 10
 persistence:
   defaultClassReplicaCount: 2
 ingress:
@@ -24,7 +26,13 @@ ingress:
     acme.cert-manager.io/http01-edit-in-place: "true"
     kubernetes.io/ingress.class: nginx
     external-dns.alpha.kubernetes.io/hostname: storage.klangregen.de
-
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-secret: basic-auth
+    nginx.ingress.kubernetes.io/auth-realm: "Enter your credentials"
 YAML
+  ]
+
+  depends_on = [
+    kubectl_manifest.longhorn_ui
   ]
 }

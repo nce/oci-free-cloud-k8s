@@ -20,3 +20,7 @@ variable "node_pool_id" {
   type        = string
 }
 
+variable "vault_id" {
+  description = "OCI Vault OIDC"
+  type        = string
+}

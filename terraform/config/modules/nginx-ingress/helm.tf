@@ -14,6 +14,7 @@ resource "helm_release" "nginx_ingress" {
   # https://github.com/oracle/oci-cloud-controller-manager/blob/master/docs/load-balancer-annotations.md
   values = [<<YAML
 controller:
+  replicaCount: 2
   service:
     annotations:
       service.beta.kubernetes.io/oci-load-balancer-shape: flexible
