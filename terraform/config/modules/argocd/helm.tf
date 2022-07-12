@@ -15,6 +15,9 @@ resource "helm_release" "argocd" {
 dex:
   enabled: false
 server:
+  repositories: |
+    - type: git
+      url: https://github.com/nce/oci-free-cloud-k8s.git
   config:
     # Argo CD's externally facing base URL (optional). Required when configuring SSO
     url: https://argocd.klangregen.de
