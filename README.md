@@ -3,9 +3,9 @@
 This repo utilizes the [always free tier](https://blogs.oracle.com/cloud-infrastructure/post/oracle-builds-out-their-portfolio-of-oracle-cloud-infrastructure-always-free-services) of the oracle cloud.
 In its current state, i just pay a few cents for dns management.
 
-In the orcale cloud the Kubernetes controlplane (oke) is free for use, you just pay for the workers, if you surpass the always free tier.
+In the orcale cloud the Kubernetes controlplane (oke) is free for use, you just pay for the workers, *if* you surpass the always free tier (which we don't).
 The 4 oCpus and 24GB memory are divided by two instances, leading to a good resource utilization.
-The boot partions are 100Gb each, allowing `longhorn` to use 
+The boot partions are 100Gb each, allowing `longhorn` to use around 60GB for in Cluster Storage.
 
 The initial infra setup is inspired by this great tutorial: https://arnoldgalovics.com/free-kubernetes-oracle-cloud/
 
@@ -25,7 +25,7 @@ The initial infra setup is inspired by this great tutorial: https://arnoldgalovi
 - [x] Grafana with Dex Login
 - [ ] Kyverno and Image Signing
 
-## Renovate
+## :telescope: Renovate
 This repo uses renovate to update all terraform providers and helm charts.
 
 The helm chart versions need to be stored alongside the repository info, and
