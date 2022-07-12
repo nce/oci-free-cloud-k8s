@@ -1,14 +1,15 @@
-# OCI private demo
+# :cloud: Oracle Cloud free tier setup
 
-This repo utilizes the [always free tier](https://blogs.oracle.com/cloud-infrastructure/post/oracle-builds-out-their-portfolio-of-oracle-cloud-infrastructure-always-free-services) of the oracle cloud. In the current state, i just pay for the dns management.
+This repo utilizes the [always free tier](https://blogs.oracle.com/cloud-infrastructure/post/oracle-builds-out-their-portfolio-of-oracle-cloud-infrastructure-always-free-services) of the oracle cloud.
+In its current state, i just pay a few cents for dns management.
 
-The 4 oCpus and 24GB memory are shared in 2 nodepool instances, leading to a
-k8s cluster with just 2 workers. This is mainly due to the 200GB disk limit on the
-free tier, as i need blockstorage on both nodes for k8s storage.
+In the orcale cloud the Kubernetes controlplane (oke) is free for use, you just pay for the workers, if you surpass the always free tier.
+The 4 oCpus and 24GB memory are divided by two instances, leading to a good resource utilization.
+The boot partions are 100Gb each, allowing `longhorn` to use 
 
-The initial setup is inspired by this great tutorial: https://arnoldgalovics.com/free-kubernetes-oracle-cloud/
+The initial infra setup is inspired by this great tutorial: https://arnoldgalovics.com/free-kubernetes-oracle-cloud/
 
-## Tooling
+## :wrench: Tooling
 - [x] K8s control plane
 - [x] Worker Nodes
 - [x] Ingress  
@@ -22,6 +23,7 @@ The initial setup is inspired by this great tutorial: https://arnoldgalovics.com
 - [x] Storage  
   with longhorn (rook/ceph & piraeus didnt work out)
 - [x] Grafana with Dex Login
+- [ ] Kyverno and Image Signing
 
 ## Renovate
 This repo uses renovate to update all terraform providers and helm charts.
