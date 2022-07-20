@@ -10,5 +10,6 @@
   },
   "terraform": {
     "depTypes": ["helm_release"]
-  }
+  },
+  "groupName": "all"
 }
