@@ -23,6 +23,8 @@ The initial infra setup is inspired by this great tutorial: https://arnoldgalovi
 - [x] Storage  
   with longhorn (rook/ceph & piraeus didnt work out)
 - [x] Grafana with Dex Login
+- [ ] [kube-Prometheus/Alertmanager-stack](https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/README.md)
+- [ ] [Prometheus Metrics Adapter](https://github.com/kubernetes-sigs/prometheus-adapter)
 - [ ] Kyverno and Image Signing
 
 ## :telescope: Renovate
