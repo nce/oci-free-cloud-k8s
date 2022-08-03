@@ -20,7 +20,10 @@ module "dex" {
 
 module "argocd" {
   source = "./modules/argocd"
+}
 
+module "prometheus" {
+  source = "./modules/prometheus"
 }
 
 module "grafana" {

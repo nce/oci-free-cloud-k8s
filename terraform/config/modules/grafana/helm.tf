@@ -57,11 +57,22 @@ ingress:
     cert-manager.io/cluster-issuer: letsencrypt
     acme.cert-manager.io/http01-edit-in-place: "true"
     kubernetes.io/ingress.class: nginx
+#nginx.ingress.kubernetes.io/limit-connections: "10"
+#nginx.ingress.kubernetes.io/limit-rps: "100"
     external-dns.alpha.kubernetes.io/hostname: monitoring.klangregen.de
   tls:
     - hosts:
       - monitoring.klangregen.de
       secretName: grafana-cert
+sidecar:
+  dashboards:
+    enabled: true
+    logLevel: INFO
+    searchNamespace: grafana
+    label: grafana_dashboard
+  datasources:
+    enabled: true
+    searchNamespace: grafana
 
 YAML
   ]
