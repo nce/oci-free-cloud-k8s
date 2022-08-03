@@ -14,12 +14,16 @@ resource "helm_release" "nginx_ingress" {
   # https://github.com/oracle/oci-cloud-controller-manager/blob/master/docs/load-balancer-annotations.md
   values = [<<YAML
 controller:
+  config:
+    limit-rate: "1048576"
+    limit-rate-after: "5242880"
+    proxy-buffering: "on"
   replicaCount: 2
   service:
     annotations:
       service.beta.kubernetes.io/oci-load-balancer-shape: flexible
-      service.beta.kubernetes.io/oci-load-balancer-shape-flex-min: 10
-      service.beta.kubernetes.io/oci-load-balancer-shape-flex-max: 10
+      service.beta.kubernetes.io/oci-load-balancer-shape-flex-min: "10"
+      service.beta.kubernetes.io/oci-load-balancer-shape-flex-max: "10"
       oci.oraclecloud.com/oci-network-security-groups: ${oci_core_network_security_group.ingress_lb.id}
 YAML
   ]
