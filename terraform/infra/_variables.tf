@@ -41,9 +41,16 @@ variable "image_id" {
   default = "ocid1.image.oc1.eu-frankfurt-1.aaaaaaaaxp2zqotv37r4zycmwfqywcujsh4scenphjjs5w2ozakmidg3vs6q"
 }
 
-variable "dns_domain_name" {
+variable "klangregen_domain_name" {
   description = "Main DNS Zone"
   type        = string
 
   default = "klangregen.de"
+}
+
+variable "wtf_domain_name" {
+  description = "DNS Zone"
+  type        = string
+
+  default = "nce.wtf"
 }

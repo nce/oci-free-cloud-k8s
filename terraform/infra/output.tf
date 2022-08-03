@@ -11,5 +11,5 @@ output "node_pool_id" {
 }
 
 output "dns_ns" {
-  value = oci_dns_zone.main_zone.nameservers
+  value = oci_dns_zone.klangregen_zone.nameservers
 }
