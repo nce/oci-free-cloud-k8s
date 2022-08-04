@@ -39,3 +39,6 @@ module "longhorn" {
   vault_id       = var.vault_id
 }
 
+module "lychee" {
+  source = "./modules/lychee"
+}
