@@ -43,3 +43,13 @@ oci ce cluster create-kubeconfig --cluster-id $(terraform output --raw k8s-clust
 
 # Issues
 * Grafana has no oci-datasource because the oci plugin is [not build for arm64](https://github.com/oracle/oci-grafana-metrics/issues/110)
+
+## Upgrade
+### OKE Upgrade
+The 1.23.4 -> 1.24.1 Kubernetes Upgrade went pretty smooth, but by hand.
+
+I followed the official guide:
+* https://docs.oracle.com/en-us/iaas/Content/ContEng/Tasks/contengupgradingk8smasternode.htm
+* https://docs.oracle.com/en-us/iaas/Content/ContEng/Tasks/contengupgradingk8sworkernode.htm
+
+Longhorn synced all volumes after the new node got ready. No downtime experienced.
