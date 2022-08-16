@@ -2,7 +2,7 @@ resource "helm_release" "longhorn" {
   chart      = "longhorn"
   name       = "longhorn"
   repository = "https://charts.longhorn.io"
-  version    = "v1.3.0"
+  version    = "1.3.1"
   namespace  = "longhorn-system"
 
   create_namespace = true
