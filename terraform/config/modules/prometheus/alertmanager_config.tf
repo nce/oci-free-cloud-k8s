@@ -1,4 +1,4 @@
-resource "kubectl_manifest" "altertmanager_config" {
+resource "kubectl_manifest" "alertmanager_config" {
   yaml_body = <<YAML
 apiVersion: monitoring.coreos.com/v1alpha1
 kind: AlertmanagerConfig
