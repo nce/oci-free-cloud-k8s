@@ -11,5 +11,8 @@
   "terraform": {
     "depTypes": ["helm_release"]
   },
-  "groupName": "all"
+  "groupName": "all",
+  "schedule": [
+    "before 3am on Monday"
+  ]
 }
