@@ -4,7 +4,6 @@ resource "helm_release" "prometheus" {
   repository = "https://prometheus-community.github.io/helm-charts"
   version    = "40.1.1"
   namespace  = "prometheus"
-
   create_namespace = true
   atomic           = true
   cleanup_on_fail  = true
