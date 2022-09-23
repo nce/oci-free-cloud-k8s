@@ -2,9 +2,8 @@ resource "helm_release" "prometheus" {
   chart      = "kube-prometheus-stack"
   name       = "prometheus"
   repository = "https://prometheus-community.github.io/helm-charts"
-  version    = "39.13.3"
+  version    = "40.1.1"
   namespace  = "prometheus"
-
   create_namespace = true
   atomic           = true
   cleanup_on_fail  = true
