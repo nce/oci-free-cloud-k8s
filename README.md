@@ -55,7 +55,9 @@ oci ce cluster create-kubeconfig --cluster-id $(terraform output --raw k8s_clust
 ![](docs/cost.aug.oct.22.png)
 
 # Issues
-* Grafana has no oci-datasource because the oci plugin is [not build for arm64](https://github.com/oracle/oci-grafana-metrics/issues/110)
+* Grafana has no oci-datasource because the oci plugin is [not build for arm64](https://github.com/oracle/oci-grafana-metrics/issues/110)  
+  This seems to be fixed, but i've still some issues accessing the datasource,
+  could be iam...
 
 ## Upgrade
 ### OKE Upgrade

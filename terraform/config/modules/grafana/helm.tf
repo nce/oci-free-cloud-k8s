@@ -46,8 +46,8 @@ extraSecretMounts:
     mountPath: /etc/secrets/dex_grafana_client
     readOnly: true
 
-#plugins:
-#  - oci-metrics-datasource
+plugins:
+  - oci-metrics-datasource
 
 ingress:
   enabled: true
