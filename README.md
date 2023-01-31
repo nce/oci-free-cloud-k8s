@@ -66,7 +66,7 @@ oci ce cluster create-kubeconfig --cluster-id $(terraform output --raw k8s_clust
 3. Go to the UI; delete the worker01 from the nodepool
 4. Scale the Nodepool back to 2 (takes ~10min)
 5. Wait for longhorn to sync (no volume in state `degraded`)
-6. repeat for 2-5
+6. repeat for second node (2-5)
 
 ### OKE Upgrade 1.24
 The 1.23.4 -> 1.24.1 Kubernetes Upgrade went pretty smooth, but by hand.
