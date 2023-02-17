@@ -13,7 +13,7 @@ LB (10Mbps), because that's free as well.
 
 The initial infra setup is inspired by this great tutorial: https://arnoldgalovics.com/free-kubernetes-oracle-cloud/
 
-> :warning: This project uses arm instances, no amd architecture
+> :warning: This project uses arm instances, no x86 architecture
 
 This repo hosts my personal stuff and is a playground for my kubernetes tooling
 
