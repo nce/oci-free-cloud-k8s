@@ -2,7 +2,7 @@ resource "helm_release" "dex" {
   chart      = "dex"
   name       = "dex"
   repository = "https://charts.dexidp.io"
-  version    = "0.13.0"
+  version    = "0.14.0"
   namespace  = "dex"
 
   create_namespace = true

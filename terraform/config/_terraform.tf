@@ -24,7 +24,7 @@ terraform {
   required_providers {
     oci = {
       source  = "oracle/oci"
-      version = "~> 4"
+      version = ">= 4"
     }
 
     kubectl = {
@@ -34,7 +34,7 @@ terraform {
 
     helm = {
       source  = "hashicorp/helm"
-      version = "~> 2"
+      version = ">= 2"
     }
 
     tls = {
