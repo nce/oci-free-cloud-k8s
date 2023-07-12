@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dashboard-solar
+  namespace: grafana
+  labels:
+    grafana_dashboard: "true"
+data:
+  solar.json: |
+    ${indent(4, data)}

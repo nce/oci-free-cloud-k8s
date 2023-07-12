@@ -73,7 +73,6 @@ sidecar:
   datasources:
     enabled: true
     searchNamespace: grafana
-
 YAML
   ]
 }
