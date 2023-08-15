@@ -30,6 +30,16 @@ prometheus:
       nginx.ingress.kubernetes.io/auth-realm: "Enter your credentials"
   prometheusSpec:
     enableRemoteWriteReceiver: true
+    retention: ""
+    retentionSize: 14GB
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: longhorn
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 15Gi
 grafana:
   enabled: false
   forceDeployDashboards: true
