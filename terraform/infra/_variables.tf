@@ -34,7 +34,7 @@ variable "kubernetes_worker_nodes" {
 
 # TODO: search for latest image
 variable "image_id" {
-  # https://docs.oracle.com/en-us/iaas/images/all/?search=aarch64
+  # https://docs.oracle.com/en-us/iaas/images/oke-worker-node-oracle-linux-8x/
   description = "OCID of the latest oracle linux"
   type        = string
 
