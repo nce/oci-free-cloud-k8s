@@ -22,7 +22,7 @@ variable "kubernetes_version" {
   description = "Version of Kubernetes"
   type        = string
 
-  default = "v1.26.7"
+  default = "v1.29.1"
 }
 
 variable "kubernetes_worker_nodes" {
@@ -38,7 +38,8 @@ variable "image_id" {
   description = "OCID of the latest oracle linux"
   type        = string
 
-  default = "ocid1.image.oc1.eu-frankfurt-1.aaaaaaaaxp2zqotv37r4zycmwfqywcujsh4scenphjjs5w2ozakmidg3vs6q"
+  # Oracle-Linux-8.9-aarch64-2024.01.26-0-OKE-1.29.1-679 // 21.02.2024
+  default = "ocid1.image.oc1.eu-frankfurt-1.aaaaaaaa3mctwlkbkaj76pnlrmdr7w6dd4frkrhuqrdadpq4g67kh5gqbn3q"
 }
 
 variable "klangregen_domain_name" {

@@ -1,21 +1,25 @@
 # :cloud: Oracle Cloud kubernetes free tier setup
 
 This repo utilizes the [always free tier](https://blogs.oracle.com/cloud-infrastructure/post/oracle-builds-out-their-portfolio-of-oracle-cloud-infrastructure-always-free-services) of the oracle cloud to provision a kubernetes cluster.
-In its current state, i just pay a few cents for dns management.
+In its current state, i just pay a few cents for dns management (which you might
+get for free on cloudflare).
 
-At orcale cloud the Kubernetes controlplane (oke) is free to use, you just pay
-for the workers, *if* you surpass the always free tier (which we don't).
+The oracle kubernetes controlplane (oke) is free to use, you just pay
+for the worker nodes, *if* you surpass the always free tier (which we don't).
 You get 4 oCpus and 24GB memory which are split into two worker-instances
-(`VM.Standard.A1.Flex` -> arm), allowing good resource utilization.
-The boot partions are 100Gb each, allowing `longhorn` to use around 60GB as in
-cluster storage. For the ingress class we use `nginx` with the oracle Flexible 
+(`VM.Standard.A1.Flex`), allowing good resource utilization.
+The boot partions are 100Gb each, so `longhorn` can use around 60GB as in-cluster
+storage. For the ingress class we use `nginx` with the oracle flexible 
 LB (10Mbps), because that's free as well.
 
 The initial infra setup is inspired by this great tutorial: https://arnoldgalovics.com/free-kubernetes-oracle-cloud/
 
 > :warning: This project uses arm instances, no x86 architecture
 
-This repo hosts my personal stuff and is a playground for my kubernetes tooling
+This repo hosts my personal stuff and is a playground for my kubernetes tooling.
+
+In case you want to reproduce the oke setup, you might [find this guide](https://github.com/piontec/free-oci-kubernetes)
+,by my coworker, more helpful.
 
 ## :wrench: Tooling
 - [x] K8s control plane
@@ -37,13 +41,19 @@ This repo hosts my personal stuff and is a playground for my kubernetes tooling
 
 ## :keyboard: Setup
 
-This setup uses terraform to managed the oci and kubernetes part.
+This setup uses terraform to manage the oci **and** kubernetes part.
 
-The terraform state is pushed to the oracle object storage (free as well). For that
+### Tooling on the client side
+* terraform
+* oci-binary
+
+The terraform state is pushed to oracle object storage (free as well). For that
 we have to create a bucket initially:
 ```
 $ oci os bucket create --name terraform-states --versioning Enabled --compartment-id xxx
 ```
+
+### Layout
 
 * The infrastructure (everything to a usable k8s-api endpoint) is managed by
 terrafom in [infra](infra/)
@@ -54,14 +64,11 @@ be created first.
 
 For the config part, we need to add a private `*.tfvars` file:
 ```
-node_pool_id     = "ocid1.nodepool.xxx"
-public_subnet_id = "ocid1.subnet.yyy"
 compartment_id   = "ocid1.tenancy.zzz"
-vault_id         = "ocid1.vault.aaa"
 ```
 
 * The first & second value are outputs from the infra-terraform.
-* The third & fourth value are currently extracted from the webui
+* The third & fourth value are extracted from the webui
 
 ### kubeconfig
 With the following command we get the kubeconfig for terraform/direct access:
@@ -80,13 +87,19 @@ The helm chart versions need to be stored alongside the repository info, and
 not in tf variables. Using variables might be possible, but quite ugly.
 * https://github.com/renovatebot/renovate/discussions/16052
 
-# Issues
-* Grafana has no oci-datasource because the oci plugin is [not build for arm64](https://github.com/oracle/oci-grafana-metrics/issues/110)  
-  This seems to be fixed, but i've still some issues accessing the datasource,
-  could be iam...
-
 ## Upgrade
+### OKE Upgrade 1.29.1
+I mostly skipped `1.27.2` & `1.28.2` (on the workers) and went for the `1.29` release. As the UI didn't
+prompt for a direct upgrade path of the control-plane, i upgraded the k8s-tf
+version to the prompted next release, ran the upgrade, and continued with the next version.
+
+The worker nodes remained at `1.26.7` during the oke upgrade, which worked because with 1.28
+the new skey policy allows for worker nodes to be three versions behind.
+
 ### OKE Upgrade 1.25.4
+
+:warning: remember to remove any `PSP`s first
+
 1. Upgrade the nodepool & cluster version by setting the k8s variable; Run terrafrom (takes ~10min)
 2. Drain/Cordon worker01
 3. Go to the UI; delete the worker01 from the nodepool
