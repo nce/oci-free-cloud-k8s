@@ -8,7 +8,7 @@ metadata:
 spec:
   interval: 1m0s
   ref:
-    branch: main
+    branch: flux
   secretRef:
     name: flux-system
   url: ssh://git@github.com/nce/oci-free-cloud-k8s.git
