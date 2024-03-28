@@ -1,3 +1,9 @@
+module "fluxcd" {
+  source = "./modules/fluxcd"
+
+  gh_token = var.gh_token
+}
+
 module "ingress" {
   source = "./modules/nginx-ingress"
 

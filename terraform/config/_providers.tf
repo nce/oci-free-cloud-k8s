@@ -12,3 +12,4 @@ provider "helm" {
 provider "kubernetes" {
   config_path    = "~/.kube/oci.kubeconfig"
 }
+

@@ -24,3 +24,8 @@ variable "vault_id" {
   description = "OCI Vault OIDC"
   type        = string
 }
+
+variable "gh_token" {
+  description = "Github PAT for FluxCD"
+  type        = string
+}
