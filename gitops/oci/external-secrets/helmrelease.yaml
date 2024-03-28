@@ -8,6 +8,9 @@ spec:
   interval: 10m
   timeout: 5m
   targetNamespace: external-secrets
+  install:
+    createNamespace: true
+    crds: CreateReplace
   chart:
     spec:
       chart: external-secrets
