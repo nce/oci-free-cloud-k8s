@@ -53,6 +53,17 @@ we have to create a bucket initially:
 $ oci os bucket create --name terraform-states --versioning Enabled --compartment-id xxx
 ```
 
+### Flux and External Secrets
+As i'm opposed to store any secrets in git (encrypted or not), i rely on
+external-secrets to propagate them to the cluster.
+
+To generate an `Secret` with the auth information for the oracle vault, we've to run:
+```
+# inside infra
+k --kubeconfig ~/.kube/oci.kubeconfig -n external-secrets create secret generic oracle-vault --from-literal=privateKey="$(terraform output --raw external_secrets_api_private_key)" --from-literal=fingerprint="$(terraform output --raw external_secrets_fingerprint)"
+
+```
+
 ### Layout
 
 * The infrastructure (everything to a usable k8s-api endpoint) is managed by

@@ -28,4 +28,3 @@ data:
 
 YAML
 }
-#compartment: ${base64encode(var.compartment_id)}

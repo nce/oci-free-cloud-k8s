@@ -1,3 +1,15 @@
+module "externalsecrets" {
+  source = "./modules/external-secrets"
+
+  compartment_id = var.compartment_id
+  vault_id       = var.vault_id
+  tenancy_id     = var.tenancy_id
+
+  depends_on = [
+    module.fluxcd
+  ]
+}
+
 module "fluxcd" {
   source = "./modules/fluxcd"
 
