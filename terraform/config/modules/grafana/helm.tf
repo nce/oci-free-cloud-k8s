@@ -11,7 +11,7 @@ resource "helm_release" "grafana" {
   lint             = true
   timeout          = 70
 
-  values = [<<YAML
+  values = sensitive([<<YAML
 grafana.ini:
   app_mode: production
   server:
@@ -28,8 +28,8 @@ grafana.ini:
     enabled: true
     name: Dex
     allow_sign_up: true
-    client_id: $__file{/etc/secrets/dex_grafana_client/client-id}
-    client_secret: $__file{/etc/secrets/dex_grafana_client/client-secret}
+    client_id: "$__file{/etc/secrets/dex_grafana_client/client-id}"
+    client_secret: "$__file{/etc/secrets/dex_grafana_client/client-secret}"
     scopes: openid profile email groups
     ;empty_scopes: false
     email_attribute_path: email
@@ -74,5 +74,5 @@ sidecar:
     enabled: true
     searchNamespace: grafana
 YAML
-  ]
+  ])
 }
