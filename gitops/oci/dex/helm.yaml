@@ -31,8 +31,6 @@ spec:
      - secretRef:
          name: dex-github-connector
      - secretRef:
-         name: dex-argocd-client
-     - secretRef:
          name: dex-grafana-client
     replicaCount: 2
     https:
