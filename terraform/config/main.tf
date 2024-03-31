@@ -22,10 +22,6 @@ module "ingress" {
   compartment_id = var.compartment_id
 }
 
-module "certmanager" {
-  source = "./modules/cert-manager"
-}
-
 module "externaldns" {
   source = "./modules/external-dns"
 
