@@ -32,14 +32,6 @@ module "externaldns" {
   compartment_id = var.compartment_id
 }
 
-module "dex" {
-  source = "./modules/dex"
-}
-
-module "argocd" {
-  source = "./modules/argocd"
-}
-
 module "prometheus" {
   source = "./modules/prometheus"
 }
