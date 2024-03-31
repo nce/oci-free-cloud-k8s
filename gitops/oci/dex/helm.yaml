@@ -1,15 +1,3 @@
-resource "helm_release" "dex" {
-  chart      = "dex"
-  name       = "dex"
-  repository = "https://charts.dexidp.io"
-  version    = "0.15.3"
-  namespace  = "dex"
-
-  create_namespace = true
-  atomic           = true
-  cleanup_on_fail  = true
-  lint             = true
-  timeout          = 120
 ---
 apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
