@@ -10,7 +10,7 @@ spec:
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
-  namespace: external-dns
+  name: external-dns
 spec:
   interval: 10m
   timeout: 5m
