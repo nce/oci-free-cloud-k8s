@@ -7,6 +7,8 @@ spec:
   interval: 1h
   path: ./gitops/core/grafana
   prune: true
+  dependsOn:
+    - name: external-secrets
   sourceRef:
     kind: GitRepository
     name: flux-system
