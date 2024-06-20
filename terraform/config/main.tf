@@ -2,8 +2,8 @@ module "externalsecrets" {
   source = "./modules/external-secrets"
 
   compartment_id = var.compartment_id
-  vault_id       = var.vault_id
   tenancy_id     = var.tenancy_id
+  vault_id       = var.vault_id
 
   depends_on = [
     module.fluxcd
@@ -25,6 +25,13 @@ module "ingress" {
 module "externaldns" {
   source = "./modules/external-dns"
 
+  compartment_id = var.compartment_id
+}
+
+module "homelab" {
+  source = "./modules/homelab"
+
+  group_id       = module.externaldns.dns_group_id
   compartment_id = var.compartment_id
 }
 

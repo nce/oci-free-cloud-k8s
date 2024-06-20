@@ -12,3 +12,8 @@ spec:
     name: flux-system
   dependsOn:
     - name: external-secrets
+  healthChecks:
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: cert-manager
+      namespace: cert-manager

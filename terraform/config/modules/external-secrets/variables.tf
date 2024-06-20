@@ -4,11 +4,11 @@ variable "compartment_id" {
 }
 
 variable "vault_id" {
-  type = string
+  type        = string
   description = "The OCID of the Vault to store the secrets in"
 }
 
 variable "tenancy_id" {
-  type = string
+  type        = string
   description = "The OCID of the tenancy"
 }
