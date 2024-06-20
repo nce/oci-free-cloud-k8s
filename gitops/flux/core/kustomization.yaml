@@ -5,3 +5,4 @@ resources:
   - ../../core/cert-manager/controller/flux.yaml
   - ../../core/cert-manager/issuer/flux.yaml
   - ../../core/dex/flux.yaml
+  - ../../core/grafana/flux.yaml
