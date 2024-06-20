@@ -13,8 +13,8 @@ spec:
       name: letsencrypt
     # Enable the HTTP-01 challenge provider
     solvers:
-    # An empty 'selector' means that this solver matches all domains
-    - selector: {}
-      http01:
-        ingress:
-          class: nginx
+      # An empty 'selector' means that this solver matches all domains
+      - selector: {}
+        http01:
+          ingress:
+            class: nginx
