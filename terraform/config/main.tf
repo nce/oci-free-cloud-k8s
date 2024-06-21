@@ -44,14 +44,3 @@ module "grafana" {
 
   compartment_id = var.compartment_id
 }
-
-module "longhorn" {
-  source = "./modules/longhorn"
-
-  compartment_id = var.compartment_id
-  vault_id       = var.vault_id
-}
-
-module "lychee" {
-  source = "./modules/lychee"
-}

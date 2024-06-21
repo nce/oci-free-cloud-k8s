@@ -7,3 +7,4 @@ resources:
   - ../../core/dex/flux.yaml
   - ../../core/grafana/flux.yaml
   - ../../core/longhorn/flux.yaml
+  - ../../core/lychee/flux.yaml
