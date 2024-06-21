@@ -23,6 +23,8 @@ spec:
               value: Europe/Berlin
             - name: APP_URL
               value: "https://img.nce.wtf"
+            - name: APP_FORCE_HTTPS
+              value: false
             - name: PUID
               value: "1000"
             - name: PGID
