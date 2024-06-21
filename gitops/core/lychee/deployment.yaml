@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: lychee
-          image: lycheeorg/lychee:v4.4.0
+          image: lycheeorg/lychee:v5.3.1
           env:
             - name: PHP_TZ
               value: Europe/Berlin
