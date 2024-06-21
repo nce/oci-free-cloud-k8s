@@ -24,7 +24,7 @@ spec:
             - name: APP_URL
               value: "https://img.nce.wtf"
             - name: APP_FORCE_HTTPS
-              value: false
+              value: true
             - name: PUID
               value: "1000"
             - name: PGID
