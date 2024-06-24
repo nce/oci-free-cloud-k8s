@@ -8,3 +8,4 @@ resources:
   - ../../core/grafana/flux.yaml
   - ../../core/longhorn/flux.yaml
   - ../../core/lychee/flux.yaml
+  - ../../core/prometheus/flux.yaml
