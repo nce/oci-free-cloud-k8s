@@ -1,12 +1,10 @@
 resource "oci_identity_group" "dns_admin" {
-  #Required
   compartment_id = var.compartment_id
   description    = "DNSAdmins"
   name           = "DNSAdmins"
 }
 
 resource "oci_identity_user" "external_dns" {
-  #Required
   compartment_id = var.compartment_id
   description    = "ExternalDNS"
   name           = "ExternalDNS"

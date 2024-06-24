@@ -1,3 +1,15 @@
+module "externalsecrets" {
+  source = "./modules/external-secrets"
+
+  compartment_id = var.compartment_id
+  tenancy_id     = var.tenancy_id
+  vault_id       = var.vault_id
+
+  depends_on = [
+    module.fluxcd
+  ]
+}
+
 module "fluxcd" {
   source = "./modules/fluxcd"
 
@@ -10,41 +22,21 @@ module "ingress" {
   compartment_id = var.compartment_id
 }
 
-module "certmanager" {
-  source = "./modules/cert-manager"
-}
-
 module "externaldns" {
   source = "./modules/external-dns"
 
   compartment_id = var.compartment_id
 }
 
-module "dex" {
-  source = "./modules/dex"
-}
+module "homelab" {
+  source = "./modules/homelab"
 
-module "argocd" {
-  source = "./modules/argocd"
-}
-
-module "prometheus" {
-  source = "./modules/prometheus"
+  group_id       = module.externaldns.dns_group_id
+  compartment_id = var.compartment_id
 }
 
 module "grafana" {
   source = "./modules/grafana"
 
   compartment_id = var.compartment_id
-}
-
-module "longhorn" {
-  source = "./modules/longhorn"
-
-  compartment_id = var.compartment_id
-  vault_id       = var.vault_id
-}
-
-module "lychee" {
-  source = "./modules/lychee"
 }

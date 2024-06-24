@@ -4,6 +4,7 @@
 provider "registry.terraform.io/fluxcd/flux" {
   version = "1.2.3"
   hashes = [
+    "h1:9g+tHJeijC9yI1op8whBUe8DHaoxeaT3ZYEn0FarsL8=",
     "h1:joVUakPF4zLGPe4+qhbOnDG91GJs1E/uAzUovpGs1Vs=",
     "zh:00eb4c54146bfc1f4d22dfd14c0109728355424088d421392b28e0e5fd76b6a7",
     "zh:1578f9125456b8d8725522a5a938b228511855da9839c0d433ea3d7d29a7ea32",
@@ -168,6 +169,7 @@ provider "registry.terraform.io/integrations/github" {
   constraints = ">= 5.18.0"
   hashes = [
     "h1:rY+q+OhJm90R900HvO05YNH7Tl0EOnbCLAoG+5niLX8=",
+    "h1:uDerb9YJo3vAO+wKw+Z064InX5aXom+nKLDry2eGf14=",
     "zh:172aa5141c525174f38504a0d2e69d0d16c0a0b941191b7170fe6ae4d7282e30",
     "zh:1a098b731fa658c808b591d030cc17cc7dfca1bf001c3c32e596f8c1bf980e9f",
     "zh:245d6a1c7e632d8ae4bdd2da2516610c50051e81505cf420a140aa5fa076ea90",

@@ -25,6 +25,11 @@ variable "vault_id" {
   type        = string
 }
 
+variable "tenancy_id" {
+  description = "Tenancy OCID"
+  type        = string
+}
+
 variable "gh_token" {
   description = "Github PAT for FluxCD"
   type        = string
