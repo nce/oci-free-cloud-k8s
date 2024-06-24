@@ -35,10 +35,6 @@ module "homelab" {
   compartment_id = var.compartment_id
 }
 
-module "prometheus" {
-  source = "./modules/prometheus"
-}
-
 module "grafana" {
   source = "./modules/grafana"
 
