@@ -11,6 +11,9 @@
   "terraform": {
     "depTypes": ["helm_release"]
   },
+  "flux": {
+    "fileMatch": ["helm.yaml$"]
+  },
   "groupName": "all",
   "timezone": "Europe/Berlin",
   "schedule": [
