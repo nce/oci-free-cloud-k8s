@@ -1,0 +1,13 @@
+extensions:
+  - yaml
+  - yml
+
+exclude:
+  - "gitops/flux/flux-system/"
+  - "**/grafana/dashboards/*.yaml"
+
+doublestar: true
+formatter:
+  type: basic
+  max_line_length: 150
+  retain_line_breaks: true
