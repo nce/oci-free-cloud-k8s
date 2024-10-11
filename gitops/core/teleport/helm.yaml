@@ -33,6 +33,7 @@ spec:
       replicaCount: 1
       certManager:
         enabled: true
+        addCommonName: true
         issuerName: letsencrypt
         issuerKind: ClusterIssuer
     ingress:
