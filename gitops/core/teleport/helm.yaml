@@ -1,0 +1,47 @@
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: teleport
+spec:
+  interval: 5m
+  url: https://charts.releases.teleport.dev
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: teleport-cluster
+spec:
+  interval: 10m
+  timeout: 5m
+  chart:
+    spec:
+      chart: teleport-cluster
+      version: "16.4.2"
+      sourceRef:
+        kind: HelmRepository
+        name: teleport
+      interval: 5m
+  releaseName: teleport-cluster
+  values:
+    chartMode: standalone
+    clusterName: teleport.nce.wtf
+    kubeClusterName: oci
+    proxyListenerMode: multiplex
+    highAvailability:
+      replicaCount: 1
+      certManager:
+        enabled: true
+        issuerName: letsencrypt
+    ingress:
+      enabled: true
+      suppressAutomaticWildcards: true
+      spec:
+        ingressClassName: nginx
+    proxy:
+      annotations:
+        ingress:
+          nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+          cert-manager.io/cluster-issuer: letsencrypt
+          acme.cert-manager.io/http01-edit-in-place: "true"
+          kubernetes.io/ingress.class: nginx
+          external-dns.alpha.kubernetes.io/hostname: teleport.nce.wtf

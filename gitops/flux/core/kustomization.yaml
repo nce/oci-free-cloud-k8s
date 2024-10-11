@@ -9,3 +9,4 @@ resources:
   - ../../core/longhorn/flux.yaml
   - ../../core/lychee/flux.yaml
   - ../../core/prometheus/flux.yaml
+  - ../../core/teleport/flux.yaml
