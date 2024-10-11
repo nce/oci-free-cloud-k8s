@@ -29,6 +29,10 @@ spec:
     clusterName: teleport.nce.wtf
     kubeClusterName: oci
     proxyListenerMode: multiplex
+    authentication:
+      type: github
+      localAuth: true
+      secondFactor: on
     highAvailability:
       replicaCount: 1
       certManager:
@@ -47,6 +51,8 @@ spec:
         type: ClusterIP
       annotations:
         ingress:
+          # this needs to be removed for http challenge
+          # oracle dns is not supported for dns challenge
           nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
           cert-manager.io/cluster-issuer: letsencrypt
           acme.cert-manager.io/http01-edit-in-place: "true"
