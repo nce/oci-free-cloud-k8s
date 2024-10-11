@@ -32,10 +32,7 @@ spec:
     highAvailability:
       replicaCount: 1
       certManager:
-        enabled: true
-        addCommonName: true
-        issuerName: letsencrypt
-        issuerKind: ClusterIssuer
+        enabled: false
     ingress:
       enabled: true
       suppressAutomaticWildcards: true
