@@ -39,7 +39,7 @@ spec:
       spec:
         ingressClassName: nginx
     tls:
-      existingSecretName: teleport-cert
+      existingSecretName: teleport-tls
     proxy:
       highAvailability:
         replicaCount: 1
@@ -47,7 +47,7 @@ spec:
         type: ClusterIP
       annotations:
         ingress:
-          nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+          #          nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
           cert-manager.io/cluster-issuer: letsencrypt
           acme.cert-manager.io/http01-edit-in-place: "true"
           kubernetes.io/ingress.class: nginx
