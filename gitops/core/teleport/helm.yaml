@@ -28,7 +28,12 @@ spec:
     chartMode: standalone
     clusterName: teleport.nce.wtf
     kubeClusterName: oci
-    proxyListenerMode: multiplex
+    proxyListenerMode: separate
+    auth:
+      teleportConfig:
+        auth_service:
+          authentication:
+            type: github
     authentication:
       type: github
       localAuth: true
