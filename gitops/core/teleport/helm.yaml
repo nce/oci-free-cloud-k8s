@@ -40,6 +40,8 @@ spec:
       spec:
         ingressClassName: nginx
     proxy:
+      service:
+        type: ClusterIP
       annotations:
         ingress:
           nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
