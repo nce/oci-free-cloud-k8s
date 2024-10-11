@@ -8,7 +8,6 @@ spec:
   path: ./gitops/core/teleport
   prune: true
   dependsOn:
-    - name: external-dns
     - name: cert-manager
   sourceRef:
     kind: GitRepository
