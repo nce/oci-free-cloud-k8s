@@ -41,7 +41,11 @@ spec:
       suppressAutomaticWildcards: true
       spec:
         ingressClassName: nginx
+    tls:
+      existingSecretName: teleport-cert
     proxy:
+      highAvailability:
+        replicaCount: 1
       service:
         type: ClusterIP
       annotations:
