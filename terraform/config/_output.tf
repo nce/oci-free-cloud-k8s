@@ -1,8 +1,8 @@
-output "longhorn_login" {
-  value = module.longhorn.longhorn_login
-
-  sensitive = true
-}
+# output "longhorn_login" {
+#   value = module.longhorn.longhorn_login
+#
+#   sensitive = true
+# }
 
 output "homelab_dns_key" {
   value = module.homelab.dns_privkey
