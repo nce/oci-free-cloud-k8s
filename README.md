@@ -45,6 +45,8 @@ This repo hosts my personal stuff and is a playground for my kubernetes tooling.
 - [ ] Kyverno and Image Signing
 
 ## :keyboard: Setup
+> [!Note]
+> I've recently updated the `backend.s3` config, to work with terraform 1.6
 
 This setup uses terraform to manage the oci **and** kubernetes part.
 
@@ -59,6 +61,25 @@ we have to create a bucket initially:
 ```
 $ oci os bucket create --name terraform-states --versioning Enabled --compartment-id xxx
 ```
+
+### Layout
+* The infrastructure (everything to a usable k8s-api endpoint) is managed by
+terrafom in [infra](infra/)
+* The k8s-modules (OCI specific config for dns/secrets etc.) are managed by terraform in [config](config/)
+
+These components are independed from eachother, but obv. the infra should
+be created first.
+
+For the config part, we need to add a private `*.tfvars` file:
+```
+compartment_id   = "ocid1.tenancy.zzz"
+```
+
+Running the `config` section you need more variables, which either get output 
+by the `infra`-run or have to be extracted from the webui.
+
+As i've switched to flux, you also need a personal GH access token in there.
+
 
 ### Flux and External Secrets
 
@@ -75,21 +96,20 @@ k --kubeconfig ~/.kube/oci.kubeconfig -n external-secrets create secret generic 
 
 ### Layout
 
-- The infrastructure (everything to a usable k8s-api endpoint) is managed by
-  terrafom in [infra](infra/)
-- The k8s-modules (usually helm) are managed by terraform in [config](config/)
+* The infrastructure (everything to a usable k8s-api endpoint) is managed by
+terrafom in [infra](infra/)
+* The k8s-modules (usually helm) are managed by terraform in [config](config/)
 
 These components are independed from eachother, but obv. the infra should
 be created first.
 
 For the config part, we need to add a private `*.tfvars` file:
-
 ```
 compartment_id   = "ocid1.tenancy.zzz"
 ```
 
-- The first & second value are outputs from the infra-terraform.
-- The third & fourth value are extracted from the webui
+* The first & second value are outputs from the infra-terraform.
+* The third & fourth value are extracted from the webui
 
 ### kubeconfig
 
@@ -97,7 +117,7 @@ With the following command we get the kubeconfig for terraform/direct access:
 
 ```
 # in the infra folder
-oci ce cluster create-kubeconfig --cluster-id $(terraform output --raw k8s_cluster_id) --file ~/.kube/configs/oci.kubeconfig --region eu-frankfurt-1 --token-version 2.0.0 --kube-endpoint PUBLIC_ENDPOINT
+oci ce cluster create-kubeconfig --cluster-id $(terraform output --raw k8s_cluster_id) --file ~/.kube/oci.kubeconfig --region eu-frankfurt-1 --token-version 2.0.0 --kube-endpoint PUBLIC_ENDPOINT
 ```
 
 ## Teleport
