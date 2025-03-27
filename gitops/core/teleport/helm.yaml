@@ -2,7 +2,6 @@ apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
   name: teleport
-  namespace: teleport
 spec:
   interval: 5m
   url: https://charts.releases.teleport.dev
@@ -11,7 +10,6 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
   name: teleport-cluster
-  namespace: teleport
 spec:
   interval: 10m
   timeout: 5m
@@ -41,14 +39,14 @@ spec:
     highAvailability:
       replicaCount: 1
       certManager:
-        enabled: false
+        enabled: true
+        issuerName: letsencrypt
+        issuerKind: ClusterIssuer
     ingress:
       enabled: true
       suppressAutomaticWildcards: true
       spec:
         ingressClassName: nginx
-    tls:
-      existingSecretName: teleport-tls
     proxy:
       highAvailability:
         replicaCount: 1

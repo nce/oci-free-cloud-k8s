@@ -21,10 +21,12 @@ controller:
   replicaCount: 2
   service:
     annotations:
-      service.beta.kubernetes.io/oci-load-balancer-shape: flexible
-      service.beta.kubernetes.io/oci-load-balancer-shape-flex-min: "10"
-      service.beta.kubernetes.io/oci-load-balancer-shape-flex-max: "10"
-      oci.oraclecloud.com/oci-network-security-groups: ${oci_core_network_security_group.ingress_lb.id}
+      oci.oraclecloud.com/load-balancer-type: "nlb"
+      oci-network-load-balancer.oraclecloud.com/oci-network-security-groups: ${oci_core_network_security_group.ingress_lb.id}
+    externalTrafficPolicy: "Local"
+    nodePorts:
+      https: "30443"
+      http: "30080"
 YAML
   ]
 }
