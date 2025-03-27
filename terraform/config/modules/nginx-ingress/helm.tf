@@ -2,7 +2,7 @@ resource "helm_release" "nginx_ingress" {
   chart      = "ingress-nginx"
   name       = "ingress-nginx"
   repository = "https://kubernetes.github.io/ingress-nginx"
-  version    = "4.12.0"
+  version    = "4.12.1"
   namespace  = "nginx-ingress"
 
   create_namespace = true
@@ -21,10 +21,12 @@ controller:
   replicaCount: 2
   service:
     annotations:
-      service.beta.kubernetes.io/oci-load-balancer-shape: flexible
-      service.beta.kubernetes.io/oci-load-balancer-shape-flex-min: "10"
-      service.beta.kubernetes.io/oci-load-balancer-shape-flex-max: "10"
-      oci.oraclecloud.com/oci-network-security-groups: ${oci_core_network_security_group.ingress_lb.id}
+      oci.oraclecloud.com/load-balancer-type: "nlb"
+      oci-network-load-balancer.oraclecloud.com/oci-network-security-groups: ${oci_core_network_security_group.ingress_lb.id}
+    externalTrafficPolicy: "Local"
+    nodePorts:
+      https: "30443"
+      http: "30080"
 YAML
   ]
 }
