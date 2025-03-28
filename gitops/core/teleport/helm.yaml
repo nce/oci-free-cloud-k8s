@@ -46,7 +46,6 @@ spec:
         issuerKind: ClusterIssuer
     ingress:
       enabled: true
-      suppressAutomaticWildcards: true
       spec:
         ingressClassName: nginx
     proxy:
@@ -54,12 +53,3 @@ spec:
         replicaCount: 1
       service:
         type: ClusterIP
-      annotations:
-        ingress:
-          # this needs to be removed for http challenge
-          # oracle dns is not supported for dns challenge
-          nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-          cert-manager.io/cluster-issuer: letsencrypt
-          acme.cert-manager.io/http01-edit-in-place: "true"
-          kubernetes.io/ingress.class: nginx
-          external-dns.alpha.kubernetes.io/hostname: teleport.nce.wtf
