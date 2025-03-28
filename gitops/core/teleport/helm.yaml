@@ -53,3 +53,7 @@ spec:
         replicaCount: 1
       service:
         type: ClusterIP
+      annotations:
+        ingress:
+          # without it will fail on the mandatory ssl passthrough (502)
+          nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
