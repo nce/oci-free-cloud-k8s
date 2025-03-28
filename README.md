@@ -104,6 +104,12 @@ oci ce cluster create-kubeconfig --cluster-id $(terraform output --raw k8s_clust
 ```
 
 ## Teleport
+### Prerequisites
+In it's current state, teleports want to setup a wildcard domain like `*.teleport.example.com`.
+With OracleCloud managing my dns, this is not possible, as `cert-manager` is not 
+able, to do a `dns` challenge against orcale dns.
+I've now switched to Cloudflare (also to mitigate costs of a few cents). 
+
 
 ### Create local user
 
