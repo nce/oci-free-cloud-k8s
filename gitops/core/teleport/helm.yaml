@@ -24,6 +24,10 @@ spec:
         name: teleport
       interval: 5m
   releaseName: teleport-cluster
+  valuesFrom:
+    - kind: ConfigMap
+      name: oci-nlb-sg-id
+      valuesKey: values.yaml
   values:
     chartMode: standalone
     clusterName: teleport.nce.wtf
@@ -45,15 +49,16 @@ spec:
         issuerName: letsencrypt
         issuerKind: ClusterIssuer
     ingress:
-      enabled: true
+      enabled: false
       spec:
         ingressClassName: nginx
     proxy:
       highAvailability:
         replicaCount: 1
       service:
-        type: ClusterIP
+        type: LoadBalancer
       annotations:
-        ingress:
-          # without it will fail on the mandatory ssl passthrough (502)
-          nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+        service:
+          external-dns.alpha.kubernetes.io/hostname: teleport.nce.wtf
+          oci.oraclecloud.com/load-balancer-type: "nlb"
+          oci-network-load-balancer.oraclecloud.com/oci-network-security-groups: "{{ tpl .Values.oci.nlbsecuritygroup . }}"

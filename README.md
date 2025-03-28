@@ -77,7 +77,7 @@ For the config part, we need to add a private `*.tfvars` file:
 compartment_id   = "ocid1.tenancy.zzz"
 ```
 
-Running the `config` section you need more variables, which either get output 
+Running the `config` section you need more variables, which either get output
 by the `infra`-run or have to be extracted from the webui.
 
 As i've switched to flux, you also need a personal GH access token in there.
@@ -106,15 +106,19 @@ oci ce cluster create-kubeconfig --cluster-id $(terraform output --raw k8s_clust
 ## Teleport
 ### Prerequisites
 In it's current state, teleports want to setup a wildcard domain like `*.teleport.example.com`.
-With OracleCloud managing my dns, this is not possible, as `cert-manager` is not 
+With OracleCloud managing my dns, this is not possible, as `cert-manager` is not
 able, to do a `dns` challenge against orcale dns.
-I've now switched to Cloudflare (also to mitigate costs of a few cents). 
+I've now switched to Cloudflare (also to mitigate costs of a few cents).
 
 
 ### Create local user
 
 ```
+# follow the setup process in the browser
 k --kubeconfig ~/.kube/oci.kubeconfig exec -n teleport -ti deployment/teleport-cluster-auth -- tctl users add nce --roles=access,editor,auditor
+
+# login from the cli
+tsh login --proxy teleport.nce.wtf:443 --auth=local --user nce teleport.nce.wtf
 ```
 
 # Cost
