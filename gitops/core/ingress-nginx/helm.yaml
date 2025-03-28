@@ -27,17 +27,22 @@ spec:
   releaseName: ingress-nginx
   valuesFrom:
     - kind: ConfigMap
-      name: oci-nlb-sg-id
+      name: oci-lb-sg-id
       valuesKey: values.yaml
   values:
     controller:
+      allowSnippetAnnotations: true
       config:
+        limit-rate: "1048576"
+        limit-rate-after: "5242880"
         proxy-buffering: "on"
       replicaCount: 2
       service:
         annotations:
-          oci.oraclecloud.com/load-balancer-type: "nlb"
-          oci-network-load-balancer.oraclecloud.com/oci-network-security-groups: "{{ tpl .Values.oci.nlbsecuritygroup . }}"
+          service.beta.kubernetes.io/oci-load-balancer-shape: flexible
+          service.beta.kubernetes.io/oci-load-balancer-shape-flex-min: "10"
+          service.beta.kubernetes.io/oci-load-balancer-shape-flex-max: "10"
+          oci.oraclecloud.com/oci-network-security-groups: "{{ tpl .Values.oci.lbsecuritygroup . }}"
         externalTrafficPolicy: "Local"
         nodePorts:
           https: "30443"
