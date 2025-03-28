@@ -25,7 +25,8 @@ spec:
       interval: 5m
   releaseName: external-dns
   values:
-    provider: oci
+    provider:
+      name: oci
     policy: sync
     extraVolumes:
       - name: config
