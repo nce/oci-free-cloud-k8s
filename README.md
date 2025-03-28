@@ -1,29 +1,30 @@
-# :cloud: Oracle Cloud kubernetes free tier setup
+# ⎈ Oracle Cloud kubernetes free tier setup
 
-This repo utilizes the [always free tier](https://blogs.oracle.com/cloud-infrastructure/post/oracle-builds-out-their-portfolio-of-oracle-cloud-infrastructure-always-free-services) of the oracle cloud to provision a kubernetes cluster.
-In its current state, i just pay a few cents for dns management (which you might
-get for free on cloudflare).
+This repo repository leverages Oracle Cloud's [always free tier](https://blogs.oracle.com/cloud-infrastructure/post/oracle-builds-out-their-portfolio-of-oracle-cloud-infrastructure-always-free-services) to provision a kubernetes cluster.
+In its current setup, the only cost is a few cents for DNS management—though
+you might be able to get that for free with Cloudflare.
 
-The oracle kubernetes controlplane (_oke_) is free to use, you just pay
-for the worker nodes, _if_ you surpass the always free tier (which we don't).
-You get 4 oCpus and 24GB memory which are split into two worker-instances
-(`VM.Standard.A1.Flex`), allowing good resource utilization.
-The boot partions are 100Gb each, so `longhorn` can use around 60GB as in-cluster
-storage. For the ingress class we use `nginx` with the oracle flexible
-LB (10Mbps), because that's free as well.
+Oracle Kubernetes Engine (OKE) is free to use, and you only pay for worker
+nodes _if_ you exceed the Always Free tier — which we don’t.
+The free tier provides **4 oCPUs and 24GB of memory**, which are split between two
+worker nodes (`VM.Standard.A1.Flex`), allowing for efficient resource
+utilization. Each node has a 100GB boot volume, with around 60GB available for
+in-cluster storage via Longhorn. For ingress, we use `k8s.io/nginx` with Oracle’s
+Flexible Load Balancer (10Mbps), which is also free.
 
-Currently it might be tricky to get a free-tier account, but there a several
-guides on reddit to overcome the account restrictions.
+Getting an Always Free account can sometimes be tricky, but there are several
+guides on Reddit that explain how to speed up the creation process.
 
 The initial infra setup is inspired by this great tutorial: https://arnoldgalovics.com/free-kubernetes-oracle-cloud/
 
-> :warning: This project uses arm instances, no x86 architecture
+> :warning: This project uses arm instances, no x86 architecture, due to the limitations
+> of the always free tier.
 
 This repo hosts my personal stuff and is a playground for my kubernetes tooling.
 
 > [!TIP]
-> In case you want to reproduce my `oke` setup, you might [find this guide](https://github.com/piontec/free-oci-kubernetes) -
-> by my coworker - more helpful.
+> In case you want to reproduce another `oke` setup, you might [find this guide](https://github.com/piontec/free-oci-kubernetes)
+> also helpful.
 
 ## :wrench: Tooling
 
@@ -61,6 +62,24 @@ we have to create a bucket initially:
 ```
 $ oci os bucket create --name terraform-states --versioning Enabled --compartment-id xxx
 ```
+
+### 🏗️ Layout
+* The infrastructure (everything to a usable k8s-api endpoint) is managed by
+terrafom in [infra](infra/)
+* The k8s-modules (OCI specific config for dns/secrets etc.) are managed by terraform in [config](config/)
+
+These components are independed from eachother, but obv. the infra should
+be created first.
+
+For the config part, we need to add a private `*.tfvars` file:
+```
+compartment_id   = "ocid1.tenancy.zzz"
+```
+
+Running the `config` section you need more variables, which either get output 
+by the `infra`-run or have to be extracted from the webui.
+
+As i've switched to flux, you also need a personal GH access token in there.
 
 ### Flux and External Secrets
 
