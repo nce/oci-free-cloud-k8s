@@ -25,14 +25,14 @@ spec:
       interval: 5m
   releaseName: external-dns
   values:
-    provider: oci
+    provider:
+      name: cloudflare
     policy: sync
-    extraVolumes:
-      - name: config
-        secret:
-          secretName: external-dns-config
-    extraVolumeMounts:
-      - name: config
-        mountPath: /etc/kubernetes/
+    env:
+    - name: CF_API_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: external-dns-config
+          key: apiKey
     extraArgs:
       - --exclude-target-net=10.0.0.0/8

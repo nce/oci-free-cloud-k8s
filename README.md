@@ -17,7 +17,8 @@ guides on Reddit that explain how to speed up the creation process.
 
 The initial infra setup is inspired by this great tutorial: https://arnoldgalovics.com/free-kubernetes-oracle-cloud/
 
-> :warning: This project uses arm instances, no x86 architecture, due to the limitations
+> [!WARNING]
+> This project uses arm instances, no x86 architecture, due to the limitations
 > of the always free tier.
 
 This repo hosts my personal stuff and is a playground for my kubernetes tooling.
@@ -93,24 +94,6 @@ To generate an `Secret` with the auth information for the oracle vault, we've to
 k --kubeconfig ~/.kube/oci.kubeconfig -n external-secrets create secret generic oracle-vault --from-literal=privateKey="$(terraform output --raw external_secrets_api_private_key)" --from-literal=fingerprint="$(terraform output --raw external_secrets_fingerprint)"
 
 ```
-
-### Layout
-* The infrastructure (everything to a usable k8s-api endpoint) is managed by
-terrafom in [infra](infra/)
-* The k8s-modules (OCI specific config for dns/secrets etc.) are managed by terraform in [config](config/)
-
-These components are independed from eachother, but obv. the infra should
-be created first.
-
-For the config part, we need to add a private `*.tfvars` file:
-
-```
-compartment_id   = "ocid1.tenancy.zzz"
-```
-
-- The first & second value are outputs from the infra-terraform.
-- The third & fourth value are extracted from the webui
-
 ### kubeconfig
 
 With the following command we get the kubeconfig for terraform/direct access:
@@ -121,22 +104,12 @@ oci ce cluster create-kubeconfig --cluster-id $(terraform output --raw k8s_clust
 ```
 
 ## Teleport
+### Prerequisites
+In it's current state, teleports want to setup a wildcard domain like `*.teleport.example.com`.
+With OracleCloud managing my dns, this is not possible, as `cert-manager` is not 
+able, to do a `dns` challenge against orcale dns.
+I've now switched to Cloudflare (also to mitigate costs of a few cents). 
 
-### Create local user
-
-```
-k --kubeconfig ~/.kube/oci.kubeconfig exec -n teleport -ti deployment/teleport-cluster-auth -- tctl users add nce --roles=access,editor,auditor
-```
-
-## Teleport
-
-### Create local user
-
-```
-k --kubeconfig ~/.kube/oci.kubeconfig exec -n teleport -ti deployment/teleport-cluster-auth -- tctl users add nce --roles=access,editor,auditor
-```
-
-## Teleport
 
 ### Create local user
 

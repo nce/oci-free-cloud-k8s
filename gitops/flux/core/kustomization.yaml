@@ -11,3 +11,4 @@ resources:
   - ../../core/lychee/flux.yaml
   - ../../core/prometheus/flux.yaml
   - ../../core/teleport/flux.yaml
+  - ../../core/ingress-nginx/flux.yaml
