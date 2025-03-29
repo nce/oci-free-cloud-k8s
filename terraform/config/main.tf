@@ -28,13 +28,6 @@ module "externaldns" {
   compartment_id = var.compartment_id
 }
 
-module "homelab" {
-  source = "./modules/homelab"
-
-  group_id       = module.externaldns.dns_group_id
-  compartment_id = var.compartment_id
-}
-
 module "grafana" {
   source = "./modules/grafana"
 
