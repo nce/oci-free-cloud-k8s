@@ -31,18 +31,23 @@ This repo hosts my personal stuff and is a playground for my kubernetes tooling.
 
 - [x] K8s control plane
 - [x] Worker Nodes
-- [x] Ingress
-      nginx-ingress controller
-- [x] Certmanager
-      with letsencrypt
-- [x] External DNS
-      with sync to the oci dns management
-- [x] Dex as OIDC Provider with github as idP
-- [x] ArgoCD with Dex Login
-- [x] Storage
+- [x] Ingress<br>
+      nginx-ingress controller on a layer 7 lb
+      teleport ingress on a layer 4 lb
+- [x] Certmanager<br>
+      with letsencrypt for dns & http challenge
+- [x] External DNS<br>
+      with sync to the cloudflare dns management
+      CR to provide `A` records for my homenetwork
+- [x] Dex as OIDC Provider<br>
+      with github as idP
+- [x] Flux for Gitops
+- [x] Teleport for k8s cluster access
+- [x] Storage<br>
       with longhorn (rook/ceph & piraeus didnt work out)
 - [x] Grafana with Dex Login
 - [ ] [kube-Prometheus/Alertmanager-stack](https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/README.md)
+      Dashboards for Flux, Teleport, Certmanager, ExternalDns
 - [ ] [Prometheus Metrics Adapter](https://github.com/kubernetes-sigs/prometheus-adapter)
 - [ ] Kyverno and Image Signing
 
