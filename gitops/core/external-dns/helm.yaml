@@ -1,4 +1,4 @@
-apiVersion: source.toolkit.fluxcd.io/v1beta2
+apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
   name: external-dns
@@ -7,7 +7,7 @@ spec:
   interval: 5m
   url: https://kubernetes-sigs.github.io/external-dns
 ---
-apiVersion: helm.toolkit.fluxcd.io/v2beta2
+apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: external-dns
@@ -28,11 +28,32 @@ spec:
     provider:
       name: cloudflare
     policy: sync
+    sources:
+      - service
+      - ingress
+      - crd
+    managedRecordTypes:
+      - A
     env:
-    - name: CF_API_TOKEN
-      valueFrom:
-        secretKeyRef:
-          name: external-dns-config
-          key: apiKey
+      - name: CF_API_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: external-dns-config
+            key: apiKey
     extraArgs:
       - --exclude-target-net=10.0.0.0/8
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: dns-records
+  namespace: flux-system
+spec:
+  interval: 1h
+  path: ./gitops/core/external-dns/dns-records/
+  prune: true
+  dependsOn:
+    - name: external-dns
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
