@@ -10,7 +10,8 @@ The free tier provides **4 oCPUs and 24GB of memory**, which are split between t
 worker nodes (`VM.Standard.A1.Flex`), allowing for efficient resource
 utilization. Each node has a 100GB boot volume, with around 60GB available for
 in-cluster storage via Longhorn. For ingress, we use `k8s.io/nginx` with Oracle’s
-Flexible Load Balancer (10Mbps), which is also free.
+Flexible Load Balancer (10Mbps), for `teleport` we the network LB, as both are
+free as well.
 
 Getting an Always Free account can sometimes be tricky, but there are several
 guides on Reddit that explain how to speed up the creation process.
@@ -32,13 +33,13 @@ This repo hosts my personal stuff and is a playground for my kubernetes tooling.
 - [x] K8s control plane
 - [x] Worker Nodes
 - [x] Ingress<br>
-      nginx-ingress controller on a layer 7 lb
+      nginx-ingress controller on a layer 7 lb<br>
       teleport ingress on a layer 4 lb
 - [x] Certmanager<br>
       with letsencrypt for dns & http challenge
 - [x] External DNS<br>
-      with sync to the cloudflare dns management
-      CR to provide `A` records for my homenetwork
+      with sync to the cloudflare dns management<br>
+      CR to provide `A` records for my home-network
 - [x] Dex as OIDC Provider<br>
       with github as idP
 - [x] Flux for Gitops
@@ -89,7 +90,7 @@ As i've switched to flux, you also need a personal GH access token in there.
 
 ### Flux and External Secrets
 
-As i'm opposed to store any secrets in git (encrypted or not), i rely on
+As i'm opposed to storing any secrets in git (encrypted or not), i rely on
 external-secrets to propagate them to the cluster.
 
 To generate an `Secret` with the auth information for the oracle vault, we've to run:
@@ -110,21 +111,34 @@ oci ce cluster create-kubeconfig --cluster-id $(terraform output --raw k8s_clust
 
 ## Teleport
 ### Prerequisites
-In it's current state, teleports want to setup a wildcard domain like `*.teleport.example.com`.
+In it's current state, teleports want to setup a wildcard domain like `*.teleport.example.com` (could be disabled).
 With OracleCloud managing my dns, this is not possible, as `cert-manager` is not
-able, to do a `dns` challenge against orcale dns.
+able to do a `dns01` challenge against orcale dns.
 I've now switched to Cloudflare (also to mitigate costs of a few cents).
 
+The Teleport User and Roles (`k8s/system:masters`) are created by the teleport
+rbac operator. The login process must be `reset` for each user, so that
+password and 2FA can be configured by each user in the WebUI
 
-### Create local user
-
+### Login
 ```
-# follow the setup process in the browser
-k --kubeconfig ~/.kube/oci.kubeconfig exec -n teleport -ti deployment/teleport-cluster-auth -- tctl users add nce --roles=access,editor,auditor
+# reset the user once
+k --kubeconfig ~/.kube/oci.kubeconfig exec -n teleport -ti deployment/teleport-cluster-auth -- tctl users reset nce
 
-# login from the cli
-tsh login --proxy teleport.nce.wtf:443 --auth=local --user nce teleport.nce.wtf
+# login to teleport
+tsh login --proxy teleport.nce.wtf:443 --auth=local --user nce teleport.nce.wt
+
+# login to the k8s cluster
+tsh kube login oci
+
+# test
+k get po -n teleport
 ```
+
+### LB setup
+
+> [!WARNING]
+> Todo: write about the svc/ingress annotations of the security groups
 
 # Cost
 

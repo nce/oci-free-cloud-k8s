@@ -1,0 +1,12 @@
+apiVersion: resources.teleport.dev/v1
+kind: TeleportRoleV7
+metadata:
+  name: admin
+  namespace: teleport
+spec:
+  allow:
+    logins: ["admin"]
+    kubernetes_labels:
+      "*": "*"
+    kubernetes_groups: ["system:masters"]
+  deny: {}

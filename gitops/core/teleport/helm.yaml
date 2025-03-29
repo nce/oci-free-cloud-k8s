@@ -48,10 +48,10 @@ spec:
         enabled: true
         issuerName: letsencrypt
         issuerKind: ClusterIssuer
+    operator:
+      enabled: true
     ingress:
       enabled: false
-      spec:
-        ingressClassName: nginx
     proxy:
       highAvailability:
         replicaCount: 1
@@ -61,4 +61,4 @@ spec:
         service:
           external-dns.alpha.kubernetes.io/hostname: teleport.nce.wtf
           oci.oraclecloud.com/load-balancer-type: "nlb"
-          oci-network-load-balancer.oraclecloud.com/oci-network-security-groups: "{{ tpl .Values.oci.nlbsecuritygroup . }}"
+          oci-network-load-balancer.oraclecloud.com/oci-network-security-groups: "ocid1.networksecuritygroup.oc1.eu-frankfurt-1.aaaaaaaauxhghg36xuzzjgw2awsd3cv4p2f2jedr5palq6fpy4exd53tve5a"
