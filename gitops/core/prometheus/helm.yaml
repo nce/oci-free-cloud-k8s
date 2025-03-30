@@ -45,6 +45,7 @@ spec:
           nginx.ingress.kubernetes.io/auth-realm: "Enter your credentials"
       prometheusSpec:
         enableRemoteWriteReceiver: true
+        podMonitorSelector: {}
         retention: ""
         retentionSize: 14GB
         storageSpec:
