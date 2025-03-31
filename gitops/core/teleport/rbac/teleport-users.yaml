@@ -1,7 +1,0 @@
-apiVersion: resources.teleport.dev/v2
-kind: TeleportUser
-metadata:
-  name: nce
-  namespace: teleport
-spec:
-  roles: ['admin']

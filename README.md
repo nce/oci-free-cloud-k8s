@@ -70,7 +70,7 @@ we have to create a bucket initially:
 $ oci os bucket create --name terraform-states --versioning Enabled --compartment-id xxx
 ```
 
-### 🏗️ Layout
+## 🏗️ Layout
 * The infrastructure (everything to a usable k8s-api endpoint) is managed by
 terrafom in [infra](infra/)
 * The k8s-modules (OCI specific config for dns/secrets etc.) are managed by terraform in [config](config/)
@@ -117,34 +117,62 @@ able to do a `dns01` challenge against orcale dns.
 I've now switched to Cloudflare (also to mitigate costs of a few cents).
 
 The Teleport User and Roles (`k8s/system:masters`) are created by the teleport
-rbac operator. The login process must be `reset` for each user, so that
-password and 2FA can be configured by each user in the WebUI
+rbac operator.
 
-### Login
+### ~Login via local User~ - removed
+I've removed local users in teleport, to use SSO with github as idP. This
+doesn't work anymore, but might be useful for local setups not using SSO:
+
+The login process must be `reset` for each user, so that
+password and 2FA can be configured by each user in the WebUI.
 ```
 # reset the user once
 k --kubeconfig ~/.kube/oci.kubeconfig exec -n teleport -ti deployment/teleport-cluster-auth -- tctl users reset nce
 
 # login to teleport
 tsh login --proxy teleport.nce.wtf:443 --auth=local --user nce teleport.nce.wt
+```
+
+### Login via Github
+There's no user management in teleport, so no reset, or 2FA setup is needed.
+```
+tsh login --proxy teleport.nce.wtf:443 --auth=github-acme --user nce teleport.nce.wtf
 
 # login to the k8s cluster
 tsh kube login oci
 
 # test
 k get po -n teleport
-```
 
+```
 ### LB setup
 
 > [!WARNING]
 > Todo: write about the svc/ingress annotations of the security groups
 
-# Cost
+## Monitoring
 
+# :money_with_wings: Cost
+Overview of my monthly costs:
 ![](docs/cost.aug.oct.22.png)
 
-## Upgrade
+# :books: Docs
+A collection of relevant upstream documentation for reference
+## Teleport
+* [teleport-operator][teleport-operator]
+* Teleport [User/Roles RBAC][teleport-rbac]
+* Mapping to teleport role
+* [SSO with GithubConnector][teleport-github-sso] and [External Client Secret][teleport-client-secret]
+* [Helm Chart Deploy Infos][teleport-helm-doc] & [Helm Chart ref][teleport-helm-chart]
+
+[teleport-client-secret]: https://goteleport.com/docs/admin-guides/infrastructure-as-code/teleport-operator/secret-lookup/#step-23-create-a-custom-resource-referencing-the-secret
+[teleport-github-sso]: https://goteleport.com/docs/admin-guides/access-controls/sso/github-sso/
+[teleport-rbac]: https://goteleport.com/docs/admin-guides/access-controls/getting-started/#step-13-add-local-users-with-preset-roles
+[teleport-helm-chart]: https://goteleport.com/docs/reference/helm-reference/teleport-cluster/
+[teleport-helm-doc]: https://goteleport.com/docs/admin-guides/deploy-a-cluster/helm-deployments/kubernetes-cluster/
+[teleport-operator]: https://goteleport.com/docs/admin-guides/infrastructure-as-code/teleport-operator/
+
+# Upgrade
 
 ### OKE Upgrade 1.29.1
 
