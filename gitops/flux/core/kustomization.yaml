@@ -12,3 +12,4 @@ resources:
   - ../../core/prometheus/flux.yaml
   - ../../core/teleport/flux.yaml
   - ../../core/ingress-nginx/flux.yaml
+  - ../../core/metrics-server/flux.yaml
