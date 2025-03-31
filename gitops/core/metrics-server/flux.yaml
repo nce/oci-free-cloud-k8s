@@ -10,8 +10,8 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-#  healthChecks:
-#  - apiVersion: apps/v1
-#      kind: Deployment
-#      name: ingress-nginx-controller
-#      namespace: ingress-nginx
+  healthChecks:
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: metrics-server
+      namespace: metrics-server
