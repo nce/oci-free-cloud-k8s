@@ -10,8 +10,8 @@ The free tier provides **4 oCPUs and 24GB of memory**, which are split between t
 worker nodes (`VM.Standard.A1.Flex`), allowing for efficient resource
 utilization. Each node has a 100GB boot volume, with around 60GB available for
 in-cluster storage via Longhorn. For ingress, we use `k8s.io/nginx` with Oracle’s
-Flexible Load Balancer (10Mbps), for `teleport` we the network LB, as both are
-free as well.
+Flexible Load Balancer (10Mbps; layer 7), for `teleport` we use the network LB (layer 4),
+as both are free as well.
 
 Getting an Always Free account can sometimes be tricky, but there are several
 guides on Reddit that explain how to speed up the creation process.
@@ -33,16 +33,17 @@ This repo hosts my personal stuff and is a playground for my kubernetes tooling.
 - [x] K8s control plane
 - [x] Worker Nodes
 - [x] Ingress<br>
-      nginx-ingress controller on a layer 7 lb<br>
-      teleport ingress on a layer 4 lb
+  * nginx-ingress controller on a layer 7 lb
+  * teleport svc on a layer 4 lb
 - [x] Certmanager<br>
-      with letsencrypt for dns & http challenge
-- [x] External DNS<br>
-      with sync to the cloudflare dns management<br>
-      CR to provide `A` records for my home-network
+  * with letsencrypt for dns & http challenge
+- [x] External DNS
+  * with sync to the cloudflare dns management
+  * CR to provide `A` records for my home-network
 - [x] Dex as OIDC Provider<br>
-      with github as idP
-- [x] Flux for Gitops
+  * with github as idP
+- [x] Flux for Gitops<br>
+  * with a github -> flux webhook receiver for instant reconciliation
 - [x] Teleport for k8s cluster access
 - [x] Storage<br>
       with longhorn (rook/ceph & piraeus didnt work out)
@@ -162,12 +163,16 @@ A collection of relevant upstream documentation for reference
 ## Ingress
 * LB Annotation [for oracle cloud][lb-annotations]
 * Providing OCI-IDs to Helm Releases on [nginx][nginx-helm-lb-annotations]
+
 ## Cert Manager
 * [DNS01 Challenge][cert-manager-dns-challenge]
+
 ## External Secrets
 * [Advanced Templating for secrets][secrets-templating]
+
 ## External Dns
 * [CRDs for DNS records][dns-crds]
+
 ## Teleport
 * [teleport-operator][teleport-operator]
 * Teleport [User/Roles RBAC][teleport-rbac]
@@ -177,6 +182,8 @@ A collection of relevant upstream documentation for reference
 
 ## Flux
 * [Monitoring setup][flux-monitoring]
+* [Webhook Config][flux-webhook]
+* [Webhook Url Hashing][flux-webhook-hashing]
 
 [lb-annotations]: https://github.com/oracle/oci-cloud-controller-manager/blob/master/docs/load-balancer-annotations.md
 [nginx-helm-lb-annotations]: https://github.com/kubernetes/ingress-nginx/blob/74ce7b057e8d4ac96d2e11e027930397e5f70010/charts/ingress-nginx/templates/controller-service.yaml#L7
@@ -192,9 +199,21 @@ A collection of relevant upstream documentation for reference
 [teleport-helm-chart]: https://goteleport.com/docs/reference/helm-reference/teleport-cluster/
 [teleport-helm-doc]: https://goteleport.com/docs/admin-guides/deploy-a-cluster/helm-deployments/kubernetes-cluster/
 [teleport-operator]: https://goteleport.com/docs/admin-guides/infrastructure-as-code/teleport-operator/
-[flux-monitoring]: https://fluxcd.io/flux/monitoring/metrics/#monitoring-setup
 
-# Upgrade
+[flux-monitoring]: https://fluxcd.io/flux/monitoring/metrics/#monitoring-setup
+[flux-webhook]: https://fluxcd.io/flux/guides/webhook-receivers/
+[flux-webhook-hashing]: https://github.com/fluxcd/notification-controller/issues/1067
+
+# Upgrade k8s version
+Upgrade is possible by using the cli
+```
+# cluster-id is visible in the ui; or get it from terraform infra
+# get new cluster versions
+❯ oci ce cluster get --cluster-id ocid1.cluster.oc1.eu-frankfurt-1.aaaaaaaaipinw4vbtopfllfdgkpbnpbl53vsh6t44qz7ed5mxcys7m7tn6qa | jq -r '.data."available-kubernetes-upgrades"'
+
+# update the cluster version
+❯ oci ce cluster update --cluster-id ocid1.cluster.oc1.eu-frankfurt-1.aaaaaaaaipinw4vbtopfllfdgkpbnpbl53vsh6t44qz7ed5mxcys7m7tn6qa --kubernetes-version v1.30.1
+```
 
 ### OKE Upgrade 1.29.1
 
