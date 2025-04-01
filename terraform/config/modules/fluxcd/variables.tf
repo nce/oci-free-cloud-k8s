@@ -14,3 +14,8 @@ variable "gh_repository" {
 
   default = "oci-free-cloud-k8s"
 }
+
+variable "compartment_id" {
+  type        = string
+  description = "The compartment to create the resources in"
+}
