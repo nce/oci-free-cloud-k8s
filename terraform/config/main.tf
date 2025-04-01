@@ -13,17 +13,12 @@ module "externalsecrets" {
 module "fluxcd" {
   source = "./modules/fluxcd"
 
-  gh_token = var.gh_token
+  gh_token       = var.gh_token
+  compartment_id = var.compartment_id
 }
 
 module "ingress" {
   source = "./modules/nginx-ingress"
-
-  compartment_id = var.compartment_id
-}
-
-module "externaldns" {
-  source = "./modules/external-dns"
 
   compartment_id = var.compartment_id
 }
