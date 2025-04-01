@@ -158,6 +158,16 @@ Overview of my monthly costs:
 
 # :books: Docs
 A collection of relevant upstream documentation for reference
+
+## Ingress
+* LB Annotation [for oracle cloud][lb-annotations]
+* Providing OCI-IDs to Helm Releases on [nginx][nginx-helm-lb-annotations]
+## Cert Manager
+* [DNS01 Challenge][cert-manager-dns-challenge]
+## External Secrets
+* [Advanced Templating for secrets][secrets-templating]
+## External Dns
+* [CRDs for DNS records][dns-crds]
 ## Teleport
 * [teleport-operator][teleport-operator]
 * Teleport [User/Roles RBAC][teleport-rbac]
@@ -165,12 +175,24 @@ A collection of relevant upstream documentation for reference
 * [SSO with GithubConnector][teleport-github-sso] and [External Client Secret][teleport-client-secret]
 * [Helm Chart Deploy Infos][teleport-helm-doc] & [Helm Chart ref][teleport-helm-chart]
 
+## Flux
+* [Monitoring setup][flux-monitoring]
+
+[lb-annotations]: https://github.com/oracle/oci-cloud-controller-manager/blob/master/docs/load-balancer-annotations.md
+[nginx-helm-lb-annotations]: https://github.com/kubernetes/ingress-nginx/blob/74ce7b057e8d4ac96d2e11e027930397e5f70010/charts/ingress-nginx/templates/controller-service.yaml#L7
+[cert-manager-dns-challenge]: https://cert-manager.io/docs/configuration/acme/dns01/
+
+[secrets-templating]: https://external-secrets.io/v0.15.0/guides/templating/#helm
+
+[dns-crds]: https://kubernetes-sigs.github.io/external-dns/latest/docs/sources/crd/#using-crd-source-to-manage-dns-records-in-different-dns-providers
+
 [teleport-client-secret]: https://goteleport.com/docs/admin-guides/infrastructure-as-code/teleport-operator/secret-lookup/#step-23-create-a-custom-resource-referencing-the-secret
 [teleport-github-sso]: https://goteleport.com/docs/admin-guides/access-controls/sso/github-sso/
 [teleport-rbac]: https://goteleport.com/docs/admin-guides/access-controls/getting-started/#step-13-add-local-users-with-preset-roles
 [teleport-helm-chart]: https://goteleport.com/docs/reference/helm-reference/teleport-cluster/
 [teleport-helm-doc]: https://goteleport.com/docs/admin-guides/deploy-a-cluster/helm-deployments/kubernetes-cluster/
 [teleport-operator]: https://goteleport.com/docs/admin-guides/infrastructure-as-code/teleport-operator/
+[flux-monitoring]: https://fluxcd.io/flux/monitoring/metrics/#monitoring-setup
 
 # Upgrade
 
