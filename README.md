@@ -21,6 +21,11 @@ The initial infra setup is inspired by this great tutorial: https://arnoldgalovi
 > [!WARNING]
 > This project uses arm instances, no x86 architecture, due to the limitations
 > of the always free tier.
+>
+> And please mind:
+> This setup is loosely documented and opinionated. It's working and in use
+> by myself. It's public, to showcase how this setup can be recreated, but
+> you need to know what you're doing and where to make modification for yourself.
 
 This repo hosts my personal stuff and is a playground for my kubernetes tooling.
 
@@ -40,15 +45,14 @@ This repo hosts my personal stuff and is a playground for my kubernetes tooling.
 - [x] External DNS
   * with sync to the cloudflare dns management
   * CR to provide `A` records for my home-network
-- [x] Dex as OIDC Provider<br>
+- [x] Dex as OIDC Provider
   * with github as idP
-- [x] Flux for Gitops<br>
+- [x] Flux for Gitops
   * with a github -> flux webhook receiver for instant reconciliation
 - [x] Teleport for k8s cluster access
-- [x] Storage<br>
-      with longhorn (rook/ceph & piraeus didnt work out)
+- [x] Storage
+   * with longhorn (rook/ceph & piraeus didn't work out)
 - [x] Grafana with Dex Login
-- [ ] [kube-Prometheus/Alertmanager-stack](https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/README.md)
       Dashboards for Flux, Teleport, Certmanager, ExternalDns
 - [ ] [Prometheus Metrics Adapter](https://github.com/kubernetes-sigs/prometheus-adapter)
 - [ ] Kyverno and Image Signing
@@ -73,8 +77,8 @@ $ oci os bucket create --name terraform-states --versioning Enabled --compartmen
 
 ## 🏗️ Layout
 * The infrastructure (everything to a usable k8s-api endpoint) is managed by
-terrafom in [infra](infra/)
-* The k8s-modules (OCI specific config for dns/secrets etc.) are managed by terraform in [config](config/)
+terrafom in [infra](terraform/infra/)
+* The k8s-modules (OCI specific config for secrets etc.) are managed by terraform in [config](terraform/config/)
 
 These components are independed from eachother, but obv. the infra should
 be created first.
@@ -87,7 +91,14 @@ compartment_id   = "ocid1.tenancy.zzz"
 Running the `config` section you need more variables, which either get output
 by the `infra`-run or have to be extracted from the webui.
 
-As i've switched to flux, you also need a personal GH access token in there.
+As i'm provisioning mostly with fluxcd, you also need a personal GH access
+token (`pat` - fine grained) in your repo.
+```
+# permission scope for the token:
+administration - read, write
+contents - read, write
+webhooks - read, write
+```
 
 ### Flux and External Secrets
 
@@ -117,8 +128,8 @@ With OracleCloud managing my dns, this is not possible, as `cert-manager` is not
 able to do a `dns01` challenge against orcale dns.
 I've now switched to Cloudflare (also to mitigate costs of a few cents).
 
-The Teleport User and Roles (`k8s/system:masters`) are created by the teleport
-rbac operator.
+The Teleport <-> K8s Role (`k8s/system:masters`) is created by the teleport
+operator.
 
 ### ~Login via local User~ - removed
 I've removed local users in teleport, to use SSO with github as idP. This
@@ -204,16 +215,50 @@ A collection of relevant upstream documentation for reference
 [flux-webhook]: https://fluxcd.io/flux/guides/webhook-receivers/
 [flux-webhook-hashing]: https://github.com/fluxcd/notification-controller/issues/1067
 
-# Upgrade k8s version
-Upgrade is possible by using the cli
-```
-# cluster-id is visible in the ui; or get it from terraform infra
-# get new cluster versions
-❯ oci ce cluster get --cluster-id ocid1.cluster.oc1.eu-frankfurt-1.aaaaaaaaipinw4vbtopfllfdgkpbnpbl53vsh6t44qz7ed5mxcys7m7tn6qa | jq -r '.data."available-kubernetes-upgrades"'
+# Upgrade the k8s version
+I recommend only upgrading to the version the first command (`available-kubernetes-upgrades`) shows.
+Other upgrades might break the process. The [K8s Skew policy][k8s-skew] allows the worker nodes (`kubelets`)
+to be three minor versions behind, so you might be alright, if you incrementally update the controlplane,
+before updating the nodepool.
 
-# update the cluster version
-❯ oci ce cluster update --cluster-id ocid1.cluster.oc1.eu-frankfurt-1.aaaaaaaaipinw4vbtopfllfdgkpbnpbl53vsh6t44qz7ed5mxcys7m7tn6qa --kubernetes-version v1.30.1
+[k8s-skew]: https://kubernetes.io/releases/version-skew-policy/#kubelet
+
+The commands should be run inside [terraform/infra/](terraform/infra)
 ```
+# get new cluster versions
+❯ oci ce cluster get --cluster-id $(terraform output --raw k8s_cluster_id) | jq -r '.data."available-kubernetes-upgrades"'
+
+# update the cluster version with the information from above
+❯ sed -i '' 's/default = "'$(terraform output --raw kubernetes_version)'"/default = "v1.31.1"/' _variables.tf
+
+# upgrade the controlplane and the nodepool & images
+# this shouldn't roll the nodes and might take around 10mins
+❯ terraform apply
+```
+ To roll the nodes, i cordon & drain the k8s node:
+```
+❯ k drain <k8s-name> --force --ignore-daemonsets --delete-emptydir-data
+❯ k cordon <k8s-name>
+```
+A node delete in k8s doesn't trigger a change in the `nodepool`. For that, we
+need to terminate the correct instance. But i haven't figured out how to delete the
+- currently cordoned - node, only using `oci`.
+
+So, login to the webui -> Oke Cluster -> Node pool and check for the right instance looking
+at the private_ip and copy the id.
+
+Now terminate that instance:
+```
+❯ oci compute instance terminate --force --instance-id <oidc.id>
+```
+This triggers a node recreation. Now wait till the node is Ready; And then wait for
+longhorn to sync the volumes.
+```
+# wait until all volumes are healthy again
+❯ k get -w volumes.longhorn.io -A
+```
+
+Repeat the cordon/drain/terminate for the second node.
 
 ### OKE Upgrade 1.29.1
 
@@ -222,7 +267,7 @@ prompt for a direct upgrade path of the control-plane, i upgraded the k8s-tf
 version to the prompted next release, ran the upgrade, and continued with the next version.
 
 The worker nodes remained at `1.26.7` during the oke upgrade, which worked because with 1.28
-the new skey policy allows for worker nodes to be three versions behind.
+the new skew policy allows for worker nodes to be three versions behind.
 
 ### OKE Upgrade 1.25.4
 
