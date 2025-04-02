@@ -1,8 +1,8 @@
 # ⎈ Oracle Cloud kubernetes free tier setup
 
-This repo repository leverages Oracle Cloud's [always free tier](https://blogs.oracle.com/cloud-infrastructure/post/oracle-builds-out-their-portfolio-of-oracle-cloud-infrastructure-always-free-services) to provision a kubernetes cluster.
-In its current setup, the only cost is a few cents for DNS management—though
-you might be able to get that for free with Cloudflare.
+This repository leverages Oracle Cloud's [always free tier](https://blogs.oracle.com/cloud-infrastructure/post/oracle-builds-out-their-portfolio-of-oracle-cloud-infrastructure-always-free-services) to provision a kubernetes cluster.
+In its current setup there are **no monthly costs** anymore, as i've now moved
+the last part (dns) from oci to cloudflare.
 
 Oracle Kubernetes Engine (OKE) is free to use, and you only pay for worker
 nodes _if_ you exceed the Always Free tier — which we don’t.
@@ -19,10 +19,10 @@ guides on Reddit that explain how to speed up the creation process.
 The initial infra setup is inspired by this great tutorial: https://arnoldgalovics.com/free-kubernetes-oracle-cloud/
 
 > [!WARNING]
-> This project uses arm instances, no x86 architecture, due to the limitations
+> This project uses arm instances, no x86 architecture; due to limitations
 > of the always free tier.
 >
-> And please mind:
+> *And please mind:*
 > This setup is loosely documented and opinionated. It's working and in use
 > by myself. It's public, to showcase how this setup can be recreated, but
 > you need to know what you're doing and where to make modification for yourself.
@@ -37,10 +37,10 @@ This repo hosts my personal stuff and is a playground for my kubernetes tooling.
 
 - [x] K8s control plane
 - [x] Worker Nodes
-- [x] Ingress<br>
+- [x] Ingress
   * nginx-ingress controller on a layer 7 lb
   * teleport svc on a layer 4 lb
-- [x] Certmanager<br>
+- [x] Certmanager
   * with letsencrypt for dns & http challenge
 - [x] External DNS
   * with sync to the cloudflare dns management
@@ -54,68 +54,60 @@ This repo hosts my personal stuff and is a playground for my kubernetes tooling.
    * with longhorn (rook/ceph & piraeus didn't work out)
 - [x] Grafana with Dex Login
       Dashboards for Flux, Teleport, Certmanager, ExternalDns
-- [ ] [Prometheus Metrics Adapter](https://github.com/kubernetes-sigs/prometheus-adapter)
+- [x] Metrics Server for cpu/mem usage overview
 - [ ] Kyverno and Image Signing
 
-## :keyboard: Setup
+# :keyboard: Setup
 > [!Note]
-> I've recently updated the `backend.s3` config, to work with terraform 1.6
+> I've recently updated the `backend.s3` config, so it should work with terraform >1.6
 
-This setup uses terraform to manage the oci **and** kubernetes part.
+This setup uses terraform to manage the oci **and** a bit of the kubernets part.
 
-### Tooling on the client side
+## Tooling on the client side
 
-- terraform
-- oci-binary
+* terraform
+* oci-binary
+* `oci setup config` successfully run
 
 The terraform state is pushed to oracle object storage (free as well). For that
 we have to create a bucket initially:
-
 ```
 $ oci os bucket create --name terraform-states --versioning Enabled --compartment-id xxx
 ```
 
-## 🏗️ Layout
+## 🏗️ Terraform Layout
 * The infrastructure (everything to a usable k8s-api endpoint) is managed by
 terrafom in [infra](terraform/infra/)
 * The k8s-modules (OCI specific config for secrets etc.) are managed by terraform in [config](terraform/config/)
+* The k8s apps/config is done with flux; see below
 
 These components are independed from eachother, but obv. the infra should
 be created first.
 
-For the config part, we need to add a private `*.tfvars` file:
+For the config part, you need to add a private `*.tfvars` file:
 ```
 compartment_id   = "ocid1.tenancy.zzz"
+... # this list is currently not complete; there's more to add
 ```
 
 Running the `config` section you need more variables, which either get output
 by the `infra`-run or have to be extracted from the webui.
 
+## FluxCD
 As i'm provisioning mostly with fluxcd, you also need a personal GH access
 token (`pat` - fine grained) in your repo.
 ```
-# permission scope for the token:
+# github permission scope for the token:
 administration - read, write
 contents - read, write
 webhooks - read, write
 ```
 
-### Flux and External Secrets
+Place this token in a private tfvars.
 
-As i'm opposed to storing any secrets in git (encrypted or not), i rely on
-external-secrets to propagate them to the cluster.
-
-To generate an `Secret` with the auth information for the oracle vault, we've to run:
-
-```
-# inside infra
-k --kubeconfig ~/.kube/oci.kubeconfig -n external-secrets create secret generic oracle-vault --from-literal=privateKey="$(terraform output --raw external_secrets_api_private_key)" --from-literal=fingerprint="$(terraform output --raw external_secrets_fingerprint)"
-
-```
-### kubeconfig
+## Kubernets Access - kubeconfig
 
 With the following command we get the kubeconfig for terraform/direct access:
-
 ```
 # in the infra folder
 oci ce cluster create-kubeconfig --cluster-id $(terraform output --raw k8s_cluster_id) --file ~/.kube/oci.kubeconfig --region eu-frankfurt-1 --token-version 2.0.0 --kube-endpoint PUBLIC_ENDPOINT
@@ -124,19 +116,22 @@ oci ce cluster create-kubeconfig --cluster-id $(terraform output --raw k8s_clust
 ## Teleport
 ### Prerequisites
 In it's current state, teleports want to setup a wildcard domain like `*.teleport.example.com` (could be disabled).
-With OracleCloud managing my dns, this is not possible, as `cert-manager` is not
+With OracleCloud managing the dns, this is not possible, as `cert-manager` is not
 able to do a `dns01` challenge against orcale dns.
 I've now switched to Cloudflare (also to mitigate costs of a few cents).
 
 The Teleport <-> K8s Role (`k8s/system:masters`) is created by the teleport
-operator.
+operator (see the `Helmrelease`)
 
 ### ~Login via local User~ - removed
-I've removed local users in teleport, to use SSO with github as idP. This
-doesn't work anymore, but might be useful for local setups not using SSO:
+I've removed local users in teleport and am using SSO with github as idP.
+
+This might still be useful for local setups not using SSO:
 
 The login process must be `reset` for each user, so that
 password and 2FA can be configured by each user in the WebUI.
+The User can be created via the teleport-operator by creating a `TelepertUser` in
+kubernetes.
 ```
 # reset the user once
 k --kubeconfig ~/.kube/oci.kubeconfig exec -n teleport -ti deployment/teleport-cluster-auth -- tctl users reset nce
@@ -241,8 +236,8 @@ The commands should be run inside [terraform/infra/](terraform/infra)
 ❯ k cordon <k8s-name>
 ```
 A node delete in k8s doesn't trigger a change in the `nodepool`. For that, we
-need to terminate the correct instance. But i haven't figured out how to delete the
-- currently cordoned - node, only using `oci`.
+need to terminate the correct instance. But i haven't figured out how to delete the -
+currently cordoned - node, only using `oci`.
 
 So, login to the webui -> Oke Cluster -> Node pool and check for the right instance looking
 at the private_ip and copy the id.
@@ -259,9 +254,11 @@ longhorn to sync the volumes.
 ```
 
 Repeat the cordon/drain/terminate for the second node.
+### OKE Upgrade 1.31.1
+For the current update, i've written above upgrade instructions.
+Worked flawlessly, though still with a bit of manual interaction with the webui...
 
 ### OKE Upgrade 1.29.1
-
 I mostly skipped `1.27.2` & `1.28.2` (on the workers) and went for the `1.29` release. As the UI didn't
 prompt for a direct upgrade path of the control-plane, i upgraded the k8s-tf
 version to the prompted next release, ran the upgrade, and continued with the next version.
