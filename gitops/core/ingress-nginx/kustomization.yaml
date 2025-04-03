@@ -1,6 +1,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: ingress-ngin
+namespace: ingress-nginx
 resources:
   - namespace.yaml
   - helm.yaml
