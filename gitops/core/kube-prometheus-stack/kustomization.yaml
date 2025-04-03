@@ -6,7 +6,7 @@ resources:
   - helm.yaml
   - secret.yaml
 commonLabels:
-  - app.kubernetes.io/component: monitoring
+  app.kubernetes.io/component: monitoring
 configMapGenerator:
   - name: flux-kube-state-metrics-config
     files:
