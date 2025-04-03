@@ -7,6 +7,15 @@ spec:
   interval: 1h
   path: ./gitops/core/lychee
   prune: true
+  dependsOn:
+    - name: external-dns
+    - name: longhorn
+    - name: cert-manager
   sourceRef:
     kind: GitRepository
     name: flux-system
+  healthChecks:
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: lychee
+      namespace: lychee

@@ -1,15 +1,15 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: prometheus
-  namespace: flux-system
+  name: kube-prometheus-stack
 spec:
   interval: 1h
-  path: ./gitops/core/prometheus
+  path: ./gitops/core/kube-prometheus-stack
   prune: true
   dependsOn:
     - name: external-secrets
     - name: cert-manager
+    - name: longhorn
   sourceRef:
     kind: GitRepository
     name: flux-system

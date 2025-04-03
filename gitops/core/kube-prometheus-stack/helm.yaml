@@ -1,0 +1,142 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: prometheus-community
+spec:
+  interval: 5m
+  url: https://prometheus-community.github.io/helm-charts
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: kube-prometheus-stack
+spec:
+  interval: 10m
+  timeout: 5m
+  install:
+    crds: Create
+  upgrade:
+    crds: CreateReplace
+  chart:
+    spec:
+      chart: kube-prometheus-stack
+      version: '70.3.0'
+      sourceRef:
+        kind: HelmRepository
+        name: prometheus-community
+      interval: 5m
+  valuesFrom:
+    - kind: ConfigMap
+      name: flux-kube-state-metrics-config
+      valuesKey: kube-state-metrics-config.yaml
+  values:
+    prometheus:
+      ingress:
+        enabled: true
+        hosts:
+          - prometheus.nce.wtf
+        tls:
+          - secretName: prometheus-cert
+            hosts:
+              - prometheus.nce.wtf
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt
+          kubernetes.io/ingress.class: nginx
+          nginx.ingress.kubernetes.io/auth-type: basic
+          nginx.ingress.kubernetes.io/auth-secret: basic-auth
+          nginx.ingress.kubernetes.io/auth-realm: "Enter your credentials"
+      prometheusSpec:
+        enableRemoteWriteReceiver: true
+        podMonitorNamespaceSelector: {}
+        podMonitorSelector:
+          matchLabels:
+            app.kubernetes.io/component: monitoring
+        retention: ""
+        retentionSize: 14GB
+        storageSpec:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: longhorn
+              accessModes: ["ReadWriteOnce"]
+              resources:
+                requests:
+                  storage: 15Gi
+    defaultRules:
+      create: true
+      rules:
+        alertmanager: true
+        etcd: false
+        configReloaders: true
+        general: true
+        k8s: true
+        kubeApiserverAvailability: true
+        kubeApiserverBurnrate: true
+        kubeApiserverHistogram: true
+        kubeApiserverSlos: true
+        kubeControllerManager: false
+        kubelet: false
+        kubeProxy: false
+        kubePrometheusGeneral: true
+        kubePrometheusNodeRecording: true
+        kubernetesApps: true
+        kubernetesResources: true
+        kubernetesStorage: true
+        kubernetesSystem: false
+        kubeSchedulerAlerting: false
+        kubeStateMetrics: true
+        network: true
+        node: true
+        nodeExporterAlerting: true
+        nodeExporterRecording: true
+        prometheus: true
+        prometheusOperator: true
+    grafana:
+      enabled: false
+      forceDeployDashboards: true
+      namespaceOverride: grafana
+      forceDeployDatasources: true
+    alertmanager:
+      alertmanagerSpec:
+        volumes:
+          - name: slack-webhook
+            secret:
+              secretName: alertmanager-slack-webhook
+        volumeMounts:
+          - name: slack-webhook
+            mountPath: /etc/slack-webhook
+            readOnly: true
+      config:
+        inhibit_rules:
+          - source_matchers:
+              - "alertname = InfoInhibitor"
+            target_matchers:
+              - "severity = info"
+            equal:
+              - "namespace"
+        route:
+          group_by: ["namespace"]
+          group_wait: 30s
+          group_interval: 5m
+          repeat_interval: 12h
+          receiver: "slack"
+          routes:
+            - receiver: "null"
+              matchers:
+                - alertname =~ "InfoInhibitor|Watchdog"
+        receivers:
+          - name: "null"
+          - name: "slack"
+            slack_configs:
+              - send_resolved: true
+                channel: "#monitoring"
+                username: alertmanager
+                api_url_file: /etc/slack-webhook/url
+                title: ":rotating_light: *{{ .CommonLabels.alertname }}:* {{ .CommonAnnotations.summary }}"
+                icon_emoji: ":fire:"
+                text: |
+                  *Status:* {{ .Status }}
+                  *Severity:* {{ .CommonLabels.severity }}
+                  *Instance:* {{ .CommonLabels.pod }}
+                  *Summary:* {{ .CommonAnnotations.summary }}
+                  *Description:* {{ .CommonAnnotations.description }}
+                  [🔍 View in Grafana](https://monitoring.klangregen.de/alerting/list?search=state:firing)
