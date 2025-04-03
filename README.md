@@ -1,8 +1,10 @@
 # ⎈ Oracle Cloud kubernetes free tier setup
 
-This repository leverages Oracle Cloud's [always free tier](https://blogs.oracle.com/cloud-infrastructure/post/oracle-builds-out-their-portfolio-of-oracle-cloud-infrastructure-always-free-services) to provision a kubernetes cluster.
-In its current setup there are **no monthly costs** anymore, as i've now moved
-the last part (dns) from oci to cloudflare.
+This repository leverages Oracle Cloud's [always free tier][oci-free-tier] to provision a kubernetes cluster.
+In its current setup there are **no monthly costs** anymore, as I've now moved
+the last part (DNS) from oci to cloudflare.
+
+[oci-free-tier]: https://blogs.oracle.com/cloud-infrastructure/post/oracle-builds-out-their-portfolio-of-oracle-cloud-infrastructure-always-free-services
 
 Oracle Kubernetes Engine (OKE) is free to use, and you only pay for worker
 nodes _if_ you exceed the Always Free tier — which we don’t.
@@ -53,7 +55,8 @@ This repo hosts my personal stuff and is a playground for my kubernetes tooling.
 - [x] Storage
    * with longhorn (rook/ceph & piraeus didn't work out)
 - [x] Grafana with Dex Login
-      Dashboards for Flux, Teleport, Certmanager, ExternalDns
+      Dashboards for Flux
+- [ ] Loki for log aggregation
 - [x] Metrics Server for cpu/mem usage overview
 - [ ] Kyverno and Image Signing
 
@@ -115,13 +118,13 @@ oci ce cluster create-kubeconfig --cluster-id $(terraform output --raw k8s_clust
 
 ## Teleport
 ### Prerequisites
-In it's current state, teleports want to setup a wildcard domain like `*.teleport.example.com` (could be disabled).
+In it's current state, teleport wants to setup a wildcard domain like `*.teleport.example.com` (could be disabled).
 With OracleCloud managing the dns, this is not possible, as `cert-manager` is not
 able to do a `dns01` challenge against orcale dns.
 I've now switched to Cloudflare (also to mitigate costs of a few cents).
 
 The Teleport <-> K8s Role (`k8s/system:masters`) is created by the teleport
-operator (see the `Helmrelease`)
+operator (see the `fluxcd-addons/Kustomization`)
 
 ### ~Login via local User~ - removed
 I've removed local users in teleport and am using SSO with github as idP.
@@ -212,13 +215,14 @@ A collection of relevant upstream documentation for reference
 
 # Upgrade the k8s version
 I recommend only upgrading to the version the first command (`available-kubernetes-upgrades`) shows.
-Other upgrades might break the process. The [K8s Skew policy][k8s-skew] allows the worker nodes (`kubelets`)
+Other upgrades, or jumps to the latest version not being shown, might break the process.
+The [K8s Skew policy][k8s-skew] allows the worker nodes (`kubelets`)
 to be three minor versions behind, so you might be alright, if you incrementally update the controlplane,
 before updating the nodepool.
 
 [k8s-skew]: https://kubernetes.io/releases/version-skew-policy/#kubelet
 
-The commands should be run inside [terraform/infra/](terraform/infra)
+The commands should be executed inside [terraform/infra/](terraform/infra)
 ```
 # get new cluster versions
 ❯ oci ce cluster get --cluster-id $(terraform output --raw k8s_cluster_id) | jq -r '.data."available-kubernetes-upgrades"'
@@ -232,15 +236,15 @@ The commands should be run inside [terraform/infra/](terraform/infra)
 ```
  To roll the nodes, i cordon & drain the k8s node:
 ```
-❯ k drain <k8s-name> --force --ignore-daemonsets --delete-emptydir-data
-❯ k cordon <k8s-name>
+❯ k drain <k8s-node-name> --force --ignore-daemonsets --delete-emptydir-data
+❯ k cordon <k8s-node-name>
 ```
-A node delete in k8s doesn't trigger a change in the `nodepool`. For that, we
+A node deletion in k8s doesn't trigger a change in the `nodepool`. For that, we
 need to terminate the correct instance. But i haven't figured out how to delete the -
 currently cordoned - node, only using `oci`.
 
-So, login to the webui -> Oke Cluster -> Node pool and check for the right instance looking
-at the private_ip and copy the id.
+So, login to the webui -> Oke Cluster -> Node pool and check for the right
+instance by looking at the private_ip and copy the id.
 
 Now terminate that instance:
 ```
@@ -252,11 +256,10 @@ longhorn to sync the volumes.
 # wait until all volumes are healthy again
 ❯ k get -w volumes.longhorn.io -A
 ```
-
 Repeat the cordon/drain/terminate for the second node.
 ### OKE Upgrade 1.31.1
 For the current update, i've written above upgrade instructions.
-Worked flawlessly, though still with a bit of manual interaction with the webui...
+Worked flawlessly, though still with a bit of manual interaction in the webui...
 
 ### OKE Upgrade 1.29.1
 I mostly skipped `1.27.2` & `1.28.2` (on the workers) and went for the `1.29` release. As the UI didn't
