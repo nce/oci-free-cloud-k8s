@@ -27,7 +27,7 @@ spec:
       interval: 5m
   valuesFrom:
     - kind: ConfigMap
-      name: kube-state-metrics-config
+      name: flux-kube-state-metrics-config
       valuesKey: kube-state-metrics-config.yaml
   values:
     prometheus:
