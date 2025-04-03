@@ -28,6 +28,7 @@ spec:
   valuesFrom:
     - kind: ConfigMap
       name: kube-state-metrics-config
+      valuesKey: kube-state-metrics-config.yaml
   values:
     prometheus:
       ingress:
