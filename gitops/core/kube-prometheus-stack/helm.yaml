@@ -98,9 +98,12 @@ spec:
       namespaceOverride: grafana
       forceDeployDatasources: true
     alertmanager:
-      extraSecret:
-        name: slack-connection
-        data:
-          slack: ${base64decode(data.oci_secrets_secretbundle.slack_workspace_id.secret_bundle_content.0.content)}
       alertmanagerSpec:
-        name: alertmanager-config
+        volumes:
+          - name: slack-webhook
+            secret:
+              secretName: alertmanager-slack-webhook
+        volumeMounts:
+          - name: slack-webhook
+            mountPath: /etc/slack-webhook
+            readOnly: true
