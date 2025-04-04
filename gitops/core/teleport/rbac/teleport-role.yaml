@@ -4,8 +4,6 @@ metadata:
   name: admin
   namespace: teleport
 spec:
-  options:
-    max_session_ttl: 7d
   allow:
     logins: ["admin"]
     kubernetes_labels:
