@@ -63,8 +63,6 @@ spec:
                   storage: 15Gi
     defaultRules:
       create: true
-      disabled:
-        KubeletDown: true
       rules:
         alertmanager: true
         etcd: false
@@ -83,7 +81,7 @@ spec:
         kubernetesApps: true
         kubernetesResources: true
         kubernetesStorage: true
-        kubernetesSystem: true
+        kubernetesSystem: false
         kubeScheduler: true
         kubeStateMetrics: true
         network: true
