@@ -45,6 +45,22 @@ spec:
           nginx.ingress.kubernetes.io/auth-type: basic
           nginx.ingress.kubernetes.io/auth-secret: basic-auth
           nginx.ingress.kubernetes.io/auth-realm: "Enter your credentials"
+      prometheusSpec:
+        enableRemoteWriteReceiver: true
+        podMonitorNamespaceSelector: {}
+        podMonitorSelector:
+          matchLabels:
+            app.kubernetes.io/component: monitoring
+        retention: ""
+        retentionSize: 14GB
+        storageSpec:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: longhorn
+              accessModes: ["ReadWriteOnce"]
+              resources:
+                requests:
+                  storage: 15Gi
     defaultRules:
       create: true
       disabled:
@@ -76,22 +92,6 @@ spec:
         nodeExporterRecording: true
         prometheus: true
         prometheusOperator: true
-      prometheusSpec:
-        enableRemoteWriteReceiver: true
-        podMonitorNamespaceSelector: {}
-        podMonitorSelector:
-          matchLabels:
-            app.kubernetes.io/component: monitoring
-        retention: ""
-        retentionSize: 14GB
-        storageSpec:
-          volumeClaimTemplate:
-            spec:
-              storageClassName: longhorn
-              accessModes: ["ReadWriteOnce"]
-              resources:
-                requests:
-                  storage: 15Gi
     grafana:
       enabled: false
       forceDeployDashboards: true
