@@ -133,3 +133,12 @@ spec:
                 channel: "#monitoring"
                 username: alertmanager
                 api_url_file: /etc/slack-webhook/url
+                title: ":rotating_light: *{{ .CommonLabels.alertname }}*"
+                icon_emoji: ":fire:"
+                text: |
+                  *Status:* {{ .Status }}
+                  *Severity:* {{ .CommonLabels.severity }}
+                  *Instance:* {{ .CommonLabels.instance }}
+                  *Summary:* {{ .CommonAnnotations.summary }}
+                  *Description:* {{ .CommonAnnotations.description }}
+                  [🔍 View in Grafana](https://monitoring.klangregen.de/alerting/list?search=state:firing)
