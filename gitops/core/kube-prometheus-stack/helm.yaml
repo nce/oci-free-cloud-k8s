@@ -132,4 +132,4 @@ spec:
               - send_resolved: true
                 channel: "#monitoring"
                 username: alertmanager
-                api_url_file: /etc/slack-url/url
+                api_url_file: /etc/slack-webhook/url
