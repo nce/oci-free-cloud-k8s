@@ -6,6 +6,7 @@ metadata:
 spec:
   dependsOn:
     - name: cert-manager
+    - name: external-secrets
   interval: 5m
   path: "./gitops/core/cert-manager/issuer"
   prune: true

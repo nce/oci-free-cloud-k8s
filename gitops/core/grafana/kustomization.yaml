@@ -5,4 +5,20 @@ resources:
   - namespace.yaml
   - secret.yaml
   - helm.yaml
-  - dashboards/bkw.yaml
+configMapGenerator:
+  - name: flux-grafana-dashboards
+    files:
+      - dashboards/fluxcd-control-plane.json
+      - dashboards/fluxcd-cluster.json
+    options:
+      labels:
+        grafana_dashboard: "1"
+        app.kubernetes.io/part-of: flux
+        kustomize.toolkit.fluxcd.io/substitute: disabled
+  - name: bkw-grafana-dashboards
+    files:
+      - dashboards/bkw.json
+    options:
+      labels:
+        grafana_dashboard: "1"
+        kustomize.toolkit.fluxcd.io/substitute: disabled

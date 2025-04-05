@@ -1,15 +1,17 @@
-apiVersion: source.toolkit.fluxcd.io/v1beta2
+apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
   name: teleport
+  namespace: teleport
 spec:
   interval: 5m
   url: https://charts.releases.teleport.dev
 ---
-apiVersion: helm.toolkit.fluxcd.io/v2beta2
+apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: teleport-cluster
+  namespace: teleport
 spec:
   interval: 10m
   timeout: 5m
@@ -22,11 +24,15 @@ spec:
         name: teleport
       interval: 5m
   releaseName: teleport-cluster
+  valuesFrom:
+    - kind: ConfigMap
+      name: oci-nlb-sg-id
+      valuesKey: values.yaml
   values:
     chartMode: standalone
     clusterName: teleport.nce.wtf
     kubeClusterName: oci
-    proxyListenerMode: separate
+    proxyListenerMode: multiplex
     auth:
       teleportConfig:
         auth_service:
@@ -42,22 +48,17 @@ spec:
         enabled: true
         issuerName: letsencrypt
         issuerKind: ClusterIssuer
-    ingress:
+    operator:
       enabled: true
-      suppressAutomaticWildcards: true
-      spec:
-        ingressClassName: nginx
+    ingress:
+      enabled: false
     proxy:
       highAvailability:
         replicaCount: 1
       service:
-        type: ClusterIP
+        type: LoadBalancer
       annotations:
-        ingress:
-          # this needs to be removed for http challenge
-          # oracle dns is not supported for dns challenge
-          nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-          cert-manager.io/cluster-issuer: letsencrypt
-          acme.cert-manager.io/http01-edit-in-place: "true"
-          kubernetes.io/ingress.class: nginx
+        service:
           external-dns.alpha.kubernetes.io/hostname: teleport.nce.wtf
+          oci.oraclecloud.com/load-balancer-type: "nlb"
+          oci-network-load-balancer.oraclecloud.com/oci-network-security-groups: "ocid1.networksecuritygroup.oc1.eu-frankfurt-1.aaaaaaaauxhghg36xuzzjgw2awsd3cv4p2f2jedr5palq6fpy4exd53tve5a"
