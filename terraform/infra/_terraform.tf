@@ -19,7 +19,7 @@ terraform {
   required_providers {
     jq = {
       source  = "massdriver-cloud/jq"
-      version = "0.2.0"
+      version = "0.2.1"
     }
     oci = {
       source  = "oracle/oci"
