@@ -1,4 +1,4 @@
-# ⎈ Oracle Cloud kubernetes free tier setup
+# ⎈ Oracle Cloud Kubernetes free tier setup
 
 This repository leverages Oracle Cloud's [always free tier][oci-free-tier] to provision a kubernetes cluster.
 In its current setup there are **no monthly costs** anymore, as I've now moved
@@ -103,10 +103,15 @@ token (`pat` - fine grained) in your repo.
 # github permission scope for the token:
 administration - read, write
 contents - read, write
+commit statuses - read, write
 webhooks - read, write
 ```
 
-Place this token in a private tfvars.
+* Place this token in a private tfvars. This installs flux and is used to
+generate the fluxcd webhook url, which triggers fluxcd reconciliation after each
+commit
+* Place this token in the oci vault (`github-fluxcd-token`). This allows fluxcd
+to annotate the github commit status, depending on the state of the `Kustomization`.
 
 ## Kubernets Access - kubeconfig
 

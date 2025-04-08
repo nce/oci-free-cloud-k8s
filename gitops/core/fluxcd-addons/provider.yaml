@@ -1,0 +1,9 @@
+apiVersion: notification.toolkit.fluxcd.io/v1beta3
+kind: Provider
+metadata:
+  name: github
+spec:
+  type: github
+  address: https://github.com/nce/oci-free-cloud-k8s
+  secretRef:
+    name: fluxcd-github-token
