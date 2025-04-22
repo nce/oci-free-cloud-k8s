@@ -75,7 +75,7 @@ This setup uses terraform to manage the oci **and** a bit of the kubernets part.
 The terraform state is pushed to oracle object storage (free as well). For that
 we have to create a bucket initially:
 ```
-$ oci os bucket create --name terraform-states --versioning Enabled --compartment-id xxx
+❯ oci os bucket create --name terraform-states --versioning Enabled --compartment-id xxx
 ```
 
 ## 🏗️ Terraform Layout
@@ -97,8 +97,8 @@ Running the `config` section you need more variables, which either get output
 by the `infra`-run or have to be extracted from the webui.
 
 ## FluxCD
-As i'm provisioning mostly with fluxcd, you also need a personal GH access
-token (`pat` - fine grained) in your repo.
+Most resources and core components of the k8s cluster are provisioned with fluxcd.
+Therefore we need a Github Personal acccess Token (`pat` - fine grained) in your repo.
 ```
 # github permission scope for the token:
 administration - read, write
@@ -118,7 +118,7 @@ to annotate the github commit status, depending on the state of the `Kustomizati
 With the following command we get the kubeconfig for terraform/direct access:
 ```
 # in the infra folder
-oci ce cluster create-kubeconfig --cluster-id $(terraform output --raw k8s_cluster_id) --file ~/.kube/oci.kubeconfig --region eu-frankfurt-1 --token-version 2.0.0 --kube-endpoint PUBLIC_ENDPOINT
+❯ oci ce cluster create-kubeconfig --cluster-id $(terraform output --raw k8s_cluster_id) --file ~/.kube/oci.kubeconfig --region eu-frankfurt-1 --token-version 2.0.0 --kube-endpoint PUBLIC_ENDPOINT
 ```
 
 ## Teleport
@@ -142,22 +142,22 @@ The User can be created via the teleport-operator by creating a `TelepertUser` i
 kubernetes.
 ```
 # reset the user once
-k --kubeconfig ~/.kube/oci.kubeconfig exec -n teleport -ti deployment/teleport-cluster-auth -- tctl users reset nce
+❯ k --kubeconfig ~/.kube/oci.kubeconfig exec -n teleport -ti deployment/teleport-cluster-auth -- tctl users reset nce
 
 # login to teleport
-tsh login --proxy teleport.nce.wtf:443 --auth=local --user nce teleport.nce.wt
+❯ tsh login --proxy teleport.nce.wtf:443 --auth=local --user nce teleport.nce.wt
 ```
 
 ### Login via Github
 There's no user management in teleport, so no reset, or 2FA setup is needed.
 ```
-tsh login --proxy teleport.nce.wtf:443 --auth=github-acme --user nce teleport.nce.wtf
+❯ tsh login --proxy teleport.nce.wtf:443 --auth=github-acme --user nce teleport.nce.wtf
 
 # login to the k8s cluster
-tsh kube login oci
+❯ tsh kube login oci
 
 # test
-k get po -n teleport
+❯ k get po -n teleport
 
 ```
 ### LB setup
