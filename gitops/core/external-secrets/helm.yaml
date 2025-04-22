@@ -16,6 +16,10 @@ spec:
   interval: 10m
   timeout: 5m
   targetNamespace: external-secrets
+  install:
+    crds: Create
+  upgrade:
+    crds: CreateReplace
   chart:
     spec:
       chart: external-secrets
