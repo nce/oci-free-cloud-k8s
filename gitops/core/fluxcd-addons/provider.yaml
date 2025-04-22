@@ -7,3 +7,14 @@ spec:
   address: https://github.com/nce/oci-free-cloud-k8s
   secretRef:
     name: fluxcd-github-token
+---
+apiVersion: notification.toolkit.fluxcd.io/v1beta3
+kind: Provider
+metadata:
+  name: slack
+spec:
+  type: slack
+  channel: monitoring
+  address: https://slack.com/api/chat.postMessage
+  secretRef:
+    name: fluxcd-slack-webhook
