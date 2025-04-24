@@ -18,7 +18,7 @@ spec:
   chart:
     spec:
       chart: teleport-cluster
-      version: "17.4.5"
+      version: "17.4.6"
       sourceRef:
         kind: HelmRepository
         name: teleport

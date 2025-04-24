@@ -13,8 +13,11 @@ module "externalsecrets" {
 module "fluxcd" {
   source = "./modules/fluxcd"
 
-  gh_token       = var.gh_token
-  compartment_id = var.compartment_id
+  gh_token                   = var.gh_token
+  compartment_id             = var.compartment_id
+  github_app_id              = var.github_app_id
+  github_app_installation_id = var.github_app_installation_id
+  github_app_pem             = var.github_app_pem
 }
 
 module "ingress" {

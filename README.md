@@ -49,13 +49,15 @@ This repo hosts my personal stuff and is a playground for my kubernetes tooling.
   * CR to provide `A` records for my home-network
 - [x] Dex as OIDC Provider
   * with github as idP
-- [x] Flux for Gitops
-  * with a github -> flux webhook receiver for instant reconciliation
+- [x] FluxCD for Gitops
+  * deployed with the new fluxcd operator
+  * github → flux webhook receiver for instant reconciliation
+  * flux → github commit annotation about conciliation status
 - [x] Teleport for k8s cluster access
 - [x] Storage
    * with longhorn (rook/ceph & piraeus didn't work out)
 - [x] Grafana with Dex Login
-      Dashboards for Flux
+   * Dashboards for Flux
 - [ ] Loki for log aggregation
 - [x] Metrics Server for cpu/mem usage overview
 - [ ] Kyverno and Image Signing
@@ -64,7 +66,7 @@ This repo hosts my personal stuff and is a playground for my kubernetes tooling.
 > [!Note]
 > I've recently updated the `backend.s3` config, so it should work with terraform >1.6
 
-This setup uses terraform to manage the oci **and** a bit of the kubernets part.
+This setup uses terraform to manage the oci **and** a bit of the kubernetes part.
 
 ## Tooling on the client side
 
@@ -77,6 +79,10 @@ we have to create a bucket initially:
 ```
 ❯ oci os bucket create --name terraform-states --versioning Enabled --compartment-id xxx
 ```
+> [!WARNING]
+> As of _24.04.2025_ there's a tf bug using the s3 bucket from oci:
+> https://github.com/oracle/terraform-provider-oci/issues/2348<br/>
+> Mitigation is easy
 
 ## 🏗️ Terraform Layout
 * The infrastructure (everything to a usable k8s-api endpoint) is managed by
@@ -84,7 +90,7 @@ terrafom in [infra](terraform/infra/)
 * The k8s-modules (OCI specific config for secrets etc.) are managed by terraform in [config](terraform/config/)
 * The k8s apps/config is done with flux; see below
 
-These components are independed from eachother, but obv. the infra should
+These components are independent from each other, but obv. the infra should
 be created first.
 
 For the config part, you need to add a private `*.tfvars` file:
@@ -96,32 +102,51 @@ compartment_id   = "ocid1.tenancy.zzz"
 Running the `config` section you need more variables, which either get output
 by the `infra`-run or have to be extracted from the webui.
 
+> [!TIP]
+> During the initial provisioning the terraform run of `config` might fail,
+> it's trying to create a `ClusterSecretStore` which only exist after the 
+> initial deployment of `external secrets` with flux. This is expected. 
+> Just rerun terraform after external secrets is successfully deployed.
+
+## Kubernets Access - kubeconfig
+After running terraform in the [infra](./terraform/infra) folder, a kubeconfig file  
+should be created in the terraform folder called `.kube.config`.
+This can be used to access the cluster.
+For a more regulated access, see the Teleport section below.
+
+The terraform resources in the [config](./terraform/config) folder will rely on the kubeconfig.
+
 ## FluxCD
 Most resources and core components of the k8s cluster are provisioned with fluxcd.
 Therefore we need a Github Personal acccess Token (`pat` - fine grained) in your repo.
 ```
 # github permission scope for the token:
-administration - read, write
 contents - read, write
 commit statuses - read, write
 webhooks - read, write
 ```
 
-* Place this token in a private tfvars. This installs flux and is used to
+* Place this token in a private tfvars. This is used to
 generate the fluxcd webhook url, which triggers fluxcd reconciliation after each
 commit
 * Place this token in the oci vault (`github-fluxcd-token`). This allows fluxcd
 to annotate the github commit status, depending on the state of the `Kustomization`.
 
-## Kubernets Access - kubeconfig
+### Fluxcd Operator
+Migrating from the `flux bootstrap` method to the flux-operator might be tricky.
+I lost most installed apps during my upgrade, because i misconfigured the 
+`FluxInstace.path` (this could've mitigated by setting `prune: false` on the KS).
+Destroying the old Bootstrap resource during the TF apply, lead 
+to the removal of the fluxcd crds like `GitRepo, HelmRelease` etc
+(had the remove the finalizers of the crds 
+to allow removal). This didn't impact my already deployed CRs though.
+The Flux Operator takes care of reinstalling everything.
 
-With the following command we get the kubeconfig for terraform/direct access:
-```
-# in the infra folder
-❯ oci ce cluster create-kubeconfig --cluster-id $(terraform output --raw k8s_cluster_id) --file ~/.kube/oci.kubeconfig --region eu-frankfurt-1 --token-version 2.0.0 --kube-endpoint PUBLIC_ENDPOINT
-```
+I've setup a Githup App and mostly followed the official guide, 
+this was pretty straightforward.
 
 ## Teleport
+[Teleport](https://goteleport.com/) is my preferred way to access the kuberentes api
 ### Prerequisites
 In it's current state, teleport wants to setup a wildcard domain like `*.teleport.example.com` (could be disabled).
 With OracleCloud managing the dns, this is not possible, as `cert-manager` is not
@@ -129,7 +154,8 @@ able to do a `dns01` challenge against orcale dns.
 I've now switched to Cloudflare (also to mitigate costs of a few cents).
 
 The Teleport <-> K8s Role (`k8s/system:masters`) is created by the teleport
-operator (see the `fluxcd-addons/Kustomization`)
+operator (see the `fluxcd-addons/Kustomization`). The SSO setup is created with 
+[fluxcd](./gitops/core/teleport/rbac).
 
 ### ~Login via local User~ - removed
 I've removed local users in teleport and am using SSO with github as idP.
@@ -158,8 +184,8 @@ There's no user management in teleport, so no reset, or 2FA setup is needed.
 
 # test
 ❯ k get po -n teleport
-
 ```
+
 ### LB setup
 
 > [!WARNING]
@@ -194,10 +220,11 @@ A collection of relevant upstream documentation for reference
 * [SSO with GithubConnector][teleport-github-sso] and [External Client Secret][teleport-client-secret]
 * [Helm Chart Deploy Infos][teleport-helm-doc] & [Helm Chart ref][teleport-helm-chart]
 
-## Flux
+## FluxCD
 * [Monitoring setup][flux-monitoring]
 * [Webhook Config][flux-webhook]
 * [Webhook Url Hashing][flux-webhook-hashing]
+* [FluxCD Operator][flux-operator-migration]
 
 [lb-annotations]: https://github.com/oracle/oci-cloud-controller-manager/blob/master/docs/load-balancer-annotations.md
 [nginx-helm-lb-annotations]: https://github.com/kubernetes/ingress-nginx/blob/74ce7b057e8d4ac96d2e11e027930397e5f70010/charts/ingress-nginx/templates/controller-service.yaml#L7
@@ -217,8 +244,9 @@ A collection of relevant upstream documentation for reference
 [flux-monitoring]: https://fluxcd.io/flux/monitoring/metrics/#monitoring-setup
 [flux-webhook]: https://fluxcd.io/flux/guides/webhook-receivers/
 [flux-webhook-hashing]: https://github.com/fluxcd/notification-controller/issues/1067
+[flux-operator-migration]: https://fluxcd.control-plane.io/operator/flux-bootstrap-migration/
 
-# Upgrade the k8s version
+# Upgrading the Kubernetes Version
 I recommend only upgrading to the version the first command (`available-kubernetes-upgrades`) shows.
 Other upgrades, or jumps to the latest version not being shown, might break the process.
 The [K8s Skew policy][k8s-skew] allows the worker nodes (`kubelets`)
