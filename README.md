@@ -64,7 +64,8 @@ This repo hosts my personal stuff and is a playground for my kubernetes tooling.
 
 # :keyboard: Setup
 > [!Note]
-> I've recently updated the `backend.s3` config, so it should work with terraform >1.6
+> I've recently updated the tf-backend config,  to utilizes the oci native
+> backend now. This requires terraform >= v1.12
 
 This setup uses terraform to manage the oci **and** a bit of the kubernetes part.
 
