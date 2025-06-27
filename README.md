@@ -79,10 +79,22 @@ we have to create a bucket initially:
 ```
 ❯ oci os bucket create --name terraform-states --versioning Enabled --compartment-id xxx
 ```
-> [!WARNING]
-> As of _24.04.2025_ there's a tf bug using the s3 bucket from oci:
-> https://github.com/oracle/terraform-provider-oci/issues/2348<br/>
-> Mitigation is easy
+
+With the bucket created we can configure the `~/.oci/config`:
+```
+[DEFAULT]
+user=ocid1.user.xxx
+fingerprint=ee:f4:xxx
+tenancy=ocid1.tenancy.oc1.xxx
+region=eu-frankfurt-1
+key_file=/Users/xxxx.pem
+
+[default]
+aws_access_key_id = xxx <- this needs to be created via UI: User -> customer secret key
+aws_secret_access_key = xxx <- this needs to be created via UI: User -> customer secret key
+
+```
+Refer to my [backend config](./terraform/infra/_terraform.tf) for the terraform s3 configuration.
 
 ## 🏗️ Terraform Layout
 * The infrastructure (everything to a usable k8s-api endpoint) is managed by
@@ -104,12 +116,12 @@ by the `infra`-run or have to be extracted from the webui.
 
 > [!TIP]
 > During the initial provisioning the terraform run of `config` might fail,
-> it's trying to create a `ClusterSecretStore` which only exist after the 
-> initial deployment of `external secrets` with flux. This is expected. 
+> it's trying to create a `ClusterSecretStore` which only exist after the
+> initial deployment of `external secrets` with flux. This is expected.
 > Just rerun terraform after external secrets is successfully deployed.
 
 ## Kubernets Access - kubeconfig
-After running terraform in the [infra](./terraform/infra) folder, a kubeconfig file  
+After running terraform in the [infra](./terraform/infra) folder, a kubeconfig file
 should be created in the terraform folder called `.kube.config`.
 This can be used to access the cluster.
 For a more regulated access, see the Teleport section below.
@@ -134,15 +146,15 @@ to annotate the github commit status, depending on the state of the `Kustomizati
 
 ### Fluxcd Operator
 Migrating from the `flux bootstrap` method to the flux-operator might be tricky.
-I lost most installed apps during my upgrade, because i misconfigured the 
+I lost most installed apps during my upgrade, because i misconfigured the
 `FluxInstace.path` (this could've mitigated by setting `prune: false` on the KS).
-Destroying the old Bootstrap resource during the TF apply, lead 
+Destroying the old Bootstrap resource during the TF apply, lead
 to the removal of the fluxcd crds like `GitRepo, HelmRelease` etc
-(had the remove the finalizers of the crds 
+(had the remove the finalizers of the crds
 to allow removal). This didn't impact my already deployed CRs though.
 The Flux Operator takes care of reinstalling everything.
 
-I've setup a Githup App and mostly followed the official guide, 
+I've setup a Githup App and mostly followed the official guide,
 this was pretty straightforward.
 
 ## Teleport
@@ -154,7 +166,7 @@ able to do a `dns01` challenge against orcale dns.
 I've now switched to Cloudflare (also to mitigate costs of a few cents).
 
 The Teleport <-> K8s Role (`k8s/system:masters`) is created by the teleport
-operator (see the `fluxcd-addons/Kustomization`). The SSO setup is created with 
+operator (see the `fluxcd-addons/Kustomization`). The SSO setup is created with
 [fluxcd](./gitops/core/teleport/rbac).
 
 ### ~Login via local User~ - removed
