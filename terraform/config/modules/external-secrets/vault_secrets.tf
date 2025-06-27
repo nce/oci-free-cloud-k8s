@@ -23,7 +23,7 @@ YAML
 
 resource "kubectl_manifest" "external_secrets_cluster_store" {
   yaml_body = <<YAML
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ClusterSecretStore
 metadata:
   name: oracle-vault
