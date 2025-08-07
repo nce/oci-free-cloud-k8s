@@ -50,7 +50,7 @@ instance:
     kind: GitRepository
     url: ${var.git_url}
     path: gitops/core
-    ref: "refs/heads/add_fluxcd_operator"
+    ref: "refs/heads/main"
     provider: github
     pullSecret: flux-instance-config
 YAML
