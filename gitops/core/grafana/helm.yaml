@@ -29,8 +29,8 @@ spec:
     grafana.ini:
       app_mode: production
       server:
-        domain: monitoring.klangregen.de
-        root_url: https://monitoring.klangregen.de
+        domain: monitoring.nce.wtf
+        root_url: https://monitoring.nce.wtf
 
       users:
         allow_sign_up: false
@@ -48,9 +48,9 @@ spec:
         ;empty_scopes: false
         email_attribute_path: email
         ;id_token_attribute_name:
-        auth_url: https://login.klangregen.de/dex/auth
-        token_url: https://login.klangregen.de/dex/token
-        api_url: https://login.klangregen.de/dex/userinfo
+        auth_url: https://login.nce.wtf/dex/auth
+        token_url: https://login.nce.wtf/dex/token
+        api_url: https://login.nce.wtf/dex/userinfo
         role_attribute_path: contains(groups[*], 'nce-acme:admin') && 'Admin' || 'Viewer'
 
     extraSecretMounts:
@@ -66,17 +66,16 @@ spec:
     ingress:
       enabled: true
       hosts:
-        - monitoring.klangregen.de
+        - monitoring.nce.wtf
       annotations:
         cert-manager.io/cluster-issuer: letsencrypt
-        acme.cert-manager.io/http01-edit-in-place: "true"
         kubernetes.io/ingress.class: nginx
         #nginx.ingress.kubernetes.io/limit-connections: "10"
         #nginx.ingress.kubernetes.io/limit-rps: "100"
-        external-dns.alpha.kubernetes.io/hostname: monitoring.klangregen.de
+        external-dns.alpha.kubernetes.io/hostname: monitoring.nce.wtf
       tls:
         - hosts:
-            - monitoring.klangregen.de
+            - monitoring.nce.wtf
           secretName: grafana-cert
     sidecar:
       dashboards:
