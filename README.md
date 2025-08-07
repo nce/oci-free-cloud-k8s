@@ -199,6 +199,13 @@ There's no user management in teleport, so no reset, or 2FA setup is needed.
 ❯ k get po -n teleport
 ```
 
+### Certificates
+The x509 certs are managed by `cert-manager`. With the dns management done by
+cloudflare, i've removed all `http01` challenges. The renewal process with
+`http01` and cloudflare is [out of the box not possible](cert-manger-cloudflare)
+
+Switching to `dns` challenge solves this issue.
+
 ### LB setup
 
 > [!WARNING]
@@ -242,6 +249,7 @@ A collection of relevant upstream documentation for reference
 [lb-annotations]: https://github.com/oracle/oci-cloud-controller-manager/blob/master/docs/load-balancer-annotations.md
 [nginx-helm-lb-annotations]: https://github.com/kubernetes/ingress-nginx/blob/74ce7b057e8d4ac96d2e11e027930397e5f70010/charts/ingress-nginx/templates/controller-service.yaml#L7
 [cert-manager-dns-challenge]: https://cert-manager.io/docs/configuration/acme/dns01/
+[cert-manager-cloudflare]: https://ryanschiang.com/cloudflare-letsencrypt-http-01
 
 [secrets-templating]: https://external-secrets.io/v0.15.0/guides/templating/#helm
 
