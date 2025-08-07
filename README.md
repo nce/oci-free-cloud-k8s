@@ -202,7 +202,7 @@ There's no user management in teleport, so no reset, or 2FA setup is needed.
 ### Certificates
 The x509 certs are managed by `cert-manager`. With the dns management done by
 cloudflare, i've removed all `http01` challenges. The renewal process with
-`http01` and cloudflare is [out of the box not possible](cert-manger-cloudflare)
+`http01` and cloudflare is [out of the box not possible][cert-manger-cloudflare]
 
 Switching to `dns` challenge solves this issue.
 
