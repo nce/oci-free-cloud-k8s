@@ -9,9 +9,6 @@ spec:
     privateKeySecretRef:
       name: letsencrypt
     solvers:
-      - http01:
-          ingress:
-            class: nginx
       - dns01:
           cloudflare:
             apiTokenSecretRef:
