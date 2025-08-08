@@ -31,6 +31,8 @@ spec:
           name: dex-github-connector
       - secretRef:
           name: dex-grafana-client
+      - secretRef:
+          name: dex-s3-proxy-client
     replicaCount: 2
     https:
       enabled: false
@@ -71,6 +73,11 @@ spec:
       #
       # If this option isn't chosen clients may be added through the gRPC API.
       staticClients:
+        - name: S3Proxy
+          IDEnv: s3proxy.client-id
+          secretEnv: s3proxy.client-secret
+          redirectURIs:
+            - https://s3.nce.wtf/auth/dex/callback
         - name: Grafana
           IDEnv: grafana.client-id
           secretEnv: grafana.client-secret
