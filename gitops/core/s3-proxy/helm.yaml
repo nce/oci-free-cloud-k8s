@@ -1,0 +1,92 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: s3-proxy
+spec:
+  interval: 5m
+  url: https://oxyno-zeta.github.io/helm-charts-v2/
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: s3-proxy
+spec:
+  interval: 10m
+  timeout: 5m
+  chart:
+    spec:
+      chart: s3-proxy
+      version: "2.23.1"
+      sourceRef:
+        kind: HelmRepository
+        name: s3-proxy
+      interval: 5m
+  releaseName: s3-proxy
+  values:
+    envFrom:
+      - secretRef:
+          name: s3-proxy-credentials
+      - secretRef:
+          name: s3-proxy-dex-client
+    ingress:
+      enabled: true
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt
+        kubernetes.io/ingress.class: nginx
+        external-dns.alpha.kubernetes.io/hostname: s3.nce.wtf
+      hosts:
+        - host: s3.nce.wtf
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - hosts:
+            - s3.nce.wtf
+          secretName: s3-cert
+    prometheus:
+      serviceMonitor:
+        enabled: true
+    configFiles:
+      config.yaml:
+        log:
+          format: text
+          level: info
+        metrics:
+          disableRouterPath: false
+        authProviders:
+          oidc:
+            dex:
+              clientID: s3-proxy
+              clientSecret:
+                env: S3_PROXY_DEX_CLIENT_SECRET
+              issuerUrl: https://login.nce.wtf/dex/
+              redirectUrl: https://s3.nce.wtf/
+              scopes:
+                - openid
+                - profile
+                - groups
+              groupClaim: groups
+        targets:
+          oracle:
+            bucket:
+              name: tourenbuch
+              region: eu-frankfurt-1
+              s3Endpoint: https://frrwy4uskhkj.compat.objectstorage.eu-frankfurt-1.oci.customer-oci.com
+              credentials:
+                accessKey:
+                  env: AWS_ACCESS_KEY_ID
+                secretKey:
+                  env: AWS_SECRET_KEY_ID
+            mount:
+              path:
+                - /
+            resources:
+              - path: "/*"
+                methods:
+                  - GET
+                  - PUT
+                  - DELETE
+                provider: dex
+                oidc:
+                  authorizationAccesses:
+                    - group: nce-acme:admin
