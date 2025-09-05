@@ -58,9 +58,11 @@ This repo hosts my personal stuff and is a playground for my kubernetes tooling.
    * with longhorn (rook/ceph & piraeus didn't work out)
 - [x] Grafana with Dex Login
    * Dashboards for Flux
+   * [ ] Switch to Grafana Operator
 - [ ] Loki for log aggregation
 - [x] Metrics Server for cpu/mem usage overview
 - [ ] Kyverno and Image Signing
+- [x] [S3 Proxy](https://github.com/oxyno-zeta/s3-proxy) for http access of buckets
 
 # :keyboard: Setup
 > [!Note]
@@ -157,6 +159,11 @@ The Flux Operator takes care of reinstalling everything.
 
 I've setup a Githup App and mostly followed the official guide,
 this was pretty straightforward.
+
+#### Development
+Switching to a feature/dev branch is rather simple, just modify the
+inCluster `FluxInstance` - search for the `sync` block and update the `ref`
+section to the according branch.
 
 ## Teleport
 [Teleport](https://goteleport.com/) is my preferred way to access the kuberentes api
