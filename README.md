@@ -62,6 +62,7 @@ This repo hosts my personal stuff and is a playground for my kubernetes tooling.
 - [ ] Loki for log aggregation
 - [x] Metrics Server for cpu/mem usage overview
 - [ ] Kyverno and Image Signing
+- [x] [S3 Proxy](https://github.com/oxyno-zeta/s3-proxy) for http access of buckets
 
 # :keyboard: Setup
 > [!Note]
