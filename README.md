@@ -1,5 +1,7 @@
 # ⎈ Oracle Cloud Kubernetes free tier setup
 
+FORK OF https://github.com/nce/oci-free-cloud-k8s
+
 This repository leverages Oracle Cloud's [always free tier][oci-free-tier] to provision a kubernetes cluster.
 In its current setup there are **no monthly costs** anymore, as I've now moved
 the last part (DNS) from oci to cloudflare.
@@ -77,27 +79,21 @@ This setup uses terraform to manage the oci **and** a bit of the kubernetes part
 * oci-binary
 * `oci setup config` successfully run
 
-The terraform state is pushed to oracle object storage (free as well). For that
-we have to create a bucket initially:
-```
-❯ oci os bucket create --name terraform-states --versioning Enabled --compartment-id xxx
-```
+The terraform state will be pushed to oracle object storage (free as well).
 
-With the bucket created we can configure the `~/.oci/config`:
+We must add the following lines to the `~/.oci/config`:
 ```
-[DEFAULT]
-user=ocid1.user.xxx
-fingerprint=ee:f4:xxx
-tenancy=ocid1.tenancy.oc1.xxx
-region=eu-frankfurt-1
-key_file=/Users/xxxx.pem
-
 [default]
 aws_access_key_id = xxx <- this needs to be created via UI: User -> customer secret key
 aws_secret_access_key = xxx <- this needs to be created via UI: User -> customer secret key
-
 ```
-Refer to my [backend config](./terraform/infra/_terraform.tf) for the terraform s3 configuration.
+
+Then, we have to create a bucket :
+```
+❯ oci os bucket create --name terraform-states --versioning Enabled --compartment-id xxx #  <- this needs to be set
+```
+
+> With the bucket created, change according value to backend `bucket` name [here](./terraform/infra/_terraform.tf) for the terraform s3 configuration.
 
 ## 🏗️ Terraform Layout
 * The infrastructure (everything to a usable k8s-api endpoint) is managed by
@@ -105,17 +101,39 @@ terrafom in [infra](terraform/infra/)
 * The k8s-modules (OCI specific config for secrets etc.) are managed by terraform in [config](terraform/config/)
 * The k8s apps/config is done with flux; see below
 
+### Running `infra`
+
 These components are independent from each other, but obv. the infra should
 be created first.
 
-For the config part, you need to add a private `*.tfvars` file:
+For the config part, you need to add a private `oracle.tfvars` file:
 ```
 compartment_id   = "ocid1.tenancy.zzz"
-... # this list is currently not complete; there's more to add
+# this list is currently not complete; there's more to add
 ```
+
+Then
+```
+❯ cd terraform/infra
+❯ terraform plan -var-file \oracle.tfvars -out temp
+❯ terraform apply "temp"
+```
+
+After running terraform in the [infra](./terraform/infra) folder, a kubeconfig file
+should be created in the terraform folder called `.kube.config`.
+This can be used to access the cluster.
+For a more regulated access, see the Teleport section below.
+
+### Running `config`
 
 Running the `config` section you need more variables, which either get output
 by the `infra`-run or have to be extracted from the webui.
+Fill the variables and :
+```
+❯ cd terraform/config
+❯ terraform plan -var-file \oracle.tfvars -out temp
+❯ terraform apply "temp"
+```
 
 > [!TIP]
 > During the initial provisioning the terraform run of `config` might fail,
@@ -124,11 +142,6 @@ by the `infra`-run or have to be extracted from the webui.
 > Just rerun terraform after external secrets is successfully deployed.
 
 ## Kubernets Access - kubeconfig
-After running terraform in the [infra](./terraform/infra) folder, a kubeconfig file
-should be created in the terraform folder called `.kube.config`.
-This can be used to access the cluster.
-For a more regulated access, see the Teleport section below.
-
 The terraform resources in the [config](./terraform/config) folder will rely on the kubeconfig.
 
 ## FluxCD
@@ -206,13 +219,6 @@ There's no user management in teleport, so no reset, or 2FA setup is needed.
 ❯ k get po -n teleport
 ```
 
-### Certificates
-The x509 certs are managed by `cert-manager`. With the dns management done by
-cloudflare, i've removed all `http01` challenges. The renewal process with
-`http01` and cloudflare is [out of the box not possible][cert-manager-cloudflare]
-
-Switching to `dns` challenge solves this issue.
-
 ### LB setup
 
 > [!WARNING]
@@ -223,6 +229,8 @@ Switching to `dns` challenge solves this issue.
 # :money_with_wings: Cost
 Overview of my monthly costs:
 ![](docs/cost.aug.oct.22.png)
+
+> As today, the cluster is free since DNS is taken care by Cloudflare.
 
 # :books: Docs
 A collection of relevant upstream documentation for reference
@@ -256,7 +264,6 @@ A collection of relevant upstream documentation for reference
 [lb-annotations]: https://github.com/oracle/oci-cloud-controller-manager/blob/master/docs/load-balancer-annotations.md
 [nginx-helm-lb-annotations]: https://github.com/kubernetes/ingress-nginx/blob/74ce7b057e8d4ac96d2e11e027930397e5f70010/charts/ingress-nginx/templates/controller-service.yaml#L7
 [cert-manager-dns-challenge]: https://cert-manager.io/docs/configuration/acme/dns01/
-[cert-manager-cloudflare]: https://ryanschiang.com/cloudflare-letsencrypt-http-01
 
 [secrets-templating]: https://external-secrets.io/v0.15.0/guides/templating/#helm
 
