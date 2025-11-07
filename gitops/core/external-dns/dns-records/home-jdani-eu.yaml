@@ -1,0 +1,25 @@
+# apiVersion: externaldns.k8s.io/v1alpha1
+# kind: DNSEndpoint
+# metadata:
+#   name: home-jdani-eu
+#   namespace: external-dns
+# spec:
+#   endpoints:
+#     - dnsName: home.jdani.eu
+#       recordTTL: 300
+#       recordType: A
+#       targets:
+#         - 192.168.1.221
+# ---
+# apiVersion: externaldns.k8s.io/v1alpha1
+# kind: DNSEndpoint
+# metadata:
+#   name: wildcard-home-jdani-eu
+#   namespace: external-dns
+# spec:
+#   endpoints:
+#     - dnsName: "*.home.jdani.eu"
+#       recordTTL: 300
+#       recordType: A
+#       targets:
+#         - 192.168.1.221

@@ -8,10 +8,10 @@ metadata:
 spec:
   tls:
     - hosts:
-        - flux-webhook.nce.wtf
+        - flux-webhook.jdani.eu
       secretName: flux-webhook-tls-secret
   rules:
-    - host: flux-webhook.nce.wtf
+    - host: flux-webhook.jdani.eu
       http:
         paths:
           - path: /

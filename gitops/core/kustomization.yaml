@@ -9,7 +9,7 @@ resources:
   - dex/flux.yaml
   - grafana/flux.yaml
   - longhorn/flux.yaml
-  - lychee/flux.yaml
+  # - lychee/flux.yaml
   - kube-prometheus-stack/flux.yaml
   - teleport/flux.yaml
   - ingress-nginx/flux.yaml

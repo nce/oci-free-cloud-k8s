@@ -12,7 +12,7 @@ resource "kubectl_manifest" "external_secrets_api_secret" {
 apiVersion: v1
 kind: Secret
 metadata:
-  name: oracle-vault
+  name: home-vault
   namespace: external-secrets
 type: Opaque
 data:
@@ -26,23 +26,23 @@ resource "kubectl_manifest" "external_secrets_cluster_store" {
 apiVersion: external-secrets.io/v1
 kind: ClusterSecretStore
 metadata:
-  name: oracle-vault
+  name: home-vault
 spec:
   provider:
     oracle:
       vault: ${var.vault_id}
-      region: eu-frankfurt-1
+      region: eu-madrid-1
       auth:
         user: ${oci_identity_user.external_secrets.id}
         tenancy: ${var.tenancy_id}
         principalType: UserPrincipal
         secretRef:
           privatekey:
-            name: oracle-vault
+            name: home-vault
             key: privateKey
             namespace: external-secrets
           fingerprint:
-            name: oracle-vault
+            name: home-vault
             key: fingerprint
             namespace: external-secrets
 YAML

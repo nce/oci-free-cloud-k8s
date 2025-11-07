@@ -14,6 +14,7 @@ module "fluxcd" {
   source = "./modules/fluxcd"
 
   gh_token                   = var.gh_token
+  gh_org                     = var.gh_org
   compartment_id             = var.compartment_id
   github_app_id              = var.github_app_id
   github_app_installation_id = var.github_app_installation_id
@@ -30,4 +31,5 @@ module "grafana" {
   source = "./modules/grafana"
 
   compartment_id = var.compartment_id
+  tenancy_id     = var.tenancy_id
 }

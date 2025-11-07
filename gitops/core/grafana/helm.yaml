@@ -29,8 +29,8 @@ spec:
     grafana.ini:
       app_mode: production
       server:
-        domain: monitoring.nce.wtf
-        root_url: https://monitoring.nce.wtf
+        domain: monitoring.jdani.eu
+        root_url: https://monitoring.jdani.eu
 
       users:
         allow_sign_up: false
@@ -48,10 +48,10 @@ spec:
         ;empty_scopes: false
         email_attribute_path: email
         ;id_token_attribute_name:
-        auth_url: https://login.nce.wtf/dex/auth
-        token_url: https://login.nce.wtf/dex/token
-        api_url: https://login.nce.wtf/dex/userinfo
-        role_attribute_path: contains(groups[*], 'nce-acme:admin') && 'Admin' || 'Viewer'
+        auth_url: https://login.jdani.eu/dex/auth
+        token_url: https://login.jdani.eu/dex/token
+        api_url: https://login.jdani.eu/dex/userinfo
+        role_attribute_path: contains(groups[*], 'jdani-acme:admin') && 'Admin' || 'Viewer'
 
     extraSecretMounts:
       - name: dex-grafana-client
@@ -66,16 +66,16 @@ spec:
     ingress:
       enabled: true
       hosts:
-        - monitoring.nce.wtf
+        - monitoring.jdani.eu
       annotations:
         cert-manager.io/cluster-issuer: letsencrypt
         kubernetes.io/ingress.class: nginx
         #nginx.ingress.kubernetes.io/limit-connections: "10"
         #nginx.ingress.kubernetes.io/limit-rps: "100"
-        external-dns.alpha.kubernetes.io/hostname: monitoring.nce.wtf
+        external-dns.alpha.kubernetes.io/hostname: monitoring.jdani.eu
       tls:
         - hosts:
-            - monitoring.nce.wtf
+            - monitoring.jdani.eu
           secretName: grafana-cert
     sidecar:
       dashboards:

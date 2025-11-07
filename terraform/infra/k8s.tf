@@ -1,6 +1,10 @@
+locals {
+  k8s_node_pool_selected_ads = data.oci_identity_availability_domains.ads.availability_domains[*].name
+}
+
 resource "oci_containerengine_cluster" "k8s_cluster" {
   compartment_id     = var.compartment_id
-  kubernetes_version = var.kubernetes_version
+  kubernetes_version = var.kubernetes_control_plane_version
   name               = "k8s-cluster"
   vcn_id             = module.vcn.vcn_id
   endpoint_config {
@@ -43,13 +47,13 @@ data "oci_containerengine_node_pool_option" "node_pool_options" {
 
 data "jq_query" "latest_image" {
   data  = jsonencode({ sources = jsondecode(jsonencode(data.oci_containerengine_node_pool_option.node_pool_options.sources)) })
-  query = "[.sources[] | select(.source_name | test(\".*aarch.*OKE-${replace(var.kubernetes_version, "v", "")}.*\")?) .image_id][0]"
+  query = "[.sources[] | select(.source_name | test(\".*aarch.*OKE-${replace(var.kubernetes_kubelets_version, "v", "")}.*\")?) .image_id][0]"
 }
 
 resource "oci_containerengine_node_pool" "k8s_node_pool" {
   cluster_id         = oci_containerengine_cluster.k8s_cluster.id
   compartment_id     = var.compartment_id
-  kubernetes_version = var.kubernetes_version
+  kubernetes_version = var.kubernetes_kubelets_version
   name               = "k8s-node-pool"
 
   node_metadata = {
@@ -57,19 +61,12 @@ resource "oci_containerengine_node_pool" "k8s_node_pool" {
   }
 
   node_config_details {
-    placement_configs {
-      availability_domain = data.oci_identity_availability_domains.ads.availability_domains[0].name
-      subnet_id           = oci_core_subnet.vcn_private_subnet.id
-    }
-
-    placement_configs {
-      availability_domain = data.oci_identity_availability_domains.ads.availability_domains[1].name
-      subnet_id           = oci_core_subnet.vcn_private_subnet.id
-    }
-
-    placement_configs {
-      availability_domain = data.oci_identity_availability_domains.ads.availability_domains[2].name
-      subnet_id           = oci_core_subnet.vcn_private_subnet.id
+    dynamic "placement_configs" {
+      for_each = local.k8s_node_pool_selected_ads
+      content {
+        availability_domain = placement_configs.value
+        subnet_id           = oci_core_subnet.vcn_private_subnet.id
+      }
     }
 
     size = var.kubernetes_worker_nodes

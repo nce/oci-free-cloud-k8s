@@ -1,14 +1,14 @@
 resource "oci_identity_group" "vault_admin" {
-  compartment_id = var.compartment_id
+  compartment_id = var.tenancy_id
   description    = "VaultAdmins"
   name           = "VaultAdmins"
 }
 
 resource "oci_identity_user" "external_secrets" {
-  compartment_id = var.compartment_id
+  compartment_id = var.tenancy_id
   description    = "ExternalSecrets"
   name           = "ExternalSecrets"
-  email          = "770135+nce@users.noreply.github.com"
+  email          = "jdani@jdani.eu"
 }
 
 resource "tls_private_key" "external_secrets" {
@@ -33,7 +33,7 @@ resource "oci_identity_user_capabilities_management" "user_capabilities_manageme
 }
 
 resource "oci_identity_policy" "external_secrets" {
-  compartment_id = var.compartment_id
+  compartment_id = var.tenancy_id
   description    = "allow vault management"
   name           = "VaultAdmins"
   statements = [

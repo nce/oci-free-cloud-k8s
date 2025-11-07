@@ -20,7 +20,7 @@ resource "oci_vault_secret" "test_secret" {
   #Required
   compartment_id = var.compartment_id
   key_id         = data.oci_kms_keys.existing_key.keys[0].id
-  secret_name    = "github-flux-webhook-token"
+  secret_name    = "fluxcd-github-webhook-token"
   vault_id       = data.oci_kms_vaults.existing_vault.vaults[0].id
 
   secret_content {
@@ -34,7 +34,7 @@ resource "github_repository_webhook" "flux_webhook" {
   repository = data.github_repository.oci.name
 
   configuration {
-    url          = "https://flux-webhook.nce.wtf/hook/${sha256(format("%s%s%s", random_password.webhook_secret.result, "github-receiver", "flux-system"))}"
+    url          = "https://flux-webhook.jdani.eu/hook/${sha256(format("%s%s%s", random_password.webhook_secret.result, "github-receiver", "flux-system"))}"
     content_type = "json"
     secret       = random_password.webhook_secret.result
     insecure_ssl = false

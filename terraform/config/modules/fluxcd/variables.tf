@@ -44,7 +44,7 @@ variable "git_url" {
   type        = string
   nullable    = false
 
-  default = "https://github.com/nce/oci-free-cloud-k8s.git"
+  default = "https://github.com/jdanieu/oci-free-cloud-k8s.git"
 }
 
 variable "flux_version" {

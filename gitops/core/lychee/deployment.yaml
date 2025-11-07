@@ -21,7 +21,7 @@ spec:
             - name: PHP_TZ
               value: Europe/Berlin
             - name: APP_URL
-              value: "https://img.nce.wtf"
+              value: "https://img.jdani.eu"
             - name: APP_FORCE_HTTPS
               value: "true"
             - name: PUID

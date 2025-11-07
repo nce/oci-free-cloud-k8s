@@ -30,12 +30,12 @@ spec:
     ingress:
       enabled: true
       tls: true
-      host: storage.nce.wtf
+      host: storage.jdani.eu
       tlsSecret: longhorn-cert
       annotations:
         cert-manager.io/cluster-issuer: letsencrypt
         kubernetes.io/ingress.class: nginx
-        external-dns.alpha.kubernetes.io/hostname: storage.nce.wtf
+        external-dns.alpha.kubernetes.io/hostname: storage.jdani.eu
         nginx.ingress.kubernetes.io/auth-type: basic
         nginx.ingress.kubernetes.io/auth-secret: basic-auth
         nginx.ingress.kubernetes.io/auth-realm: "Enter your credentials"

@@ -14,6 +14,10 @@ output "node_pool_id" {
   value = oci_containerengine_node_pool.k8s_node_pool.id
 }
 
-output "kubernetes_version" {
-  value = var.kubernetes_version
+output "kubernetes_control_plane_version" {
+  value = var.kubernetes_control_plane_version
+}
+
+output "kubernetes_kubelets_version" {
+  value = var.kubernetes_kubelets_version
 }

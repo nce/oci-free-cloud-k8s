@@ -30,7 +30,7 @@ spec:
       valuesKey: values.yaml
   values:
     chartMode: standalone
-    clusterName: teleport.nce.wtf
+    clusterName: teleport.jdani.eu
     kubeClusterName: oci
     proxyListenerMode: multiplex
     auth:
@@ -59,6 +59,6 @@ spec:
         type: LoadBalancer
       annotations:
         service:
-          external-dns.alpha.kubernetes.io/hostname: teleport.nce.wtf
+          external-dns.alpha.kubernetes.io/hostname: teleport.jdani.eu
           oci.oraclecloud.com/load-balancer-type: "nlb"
           oci-network-load-balancer.oraclecloud.com/oci-network-security-groups: "ocid1.networksecuritygroup.oc1.eu-frankfurt-1.aaaaaaaauxhghg36xuzzjgw2awsd3cv4p2f2jedr5palq6fpy4exd53tve5a"

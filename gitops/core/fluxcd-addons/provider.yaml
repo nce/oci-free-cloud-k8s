@@ -4,7 +4,7 @@ metadata:
   name: github
 spec:
   type: github
-  address: https://github.com/nce/oci-free-cloud-k8s
+  address: https://github.com/jdanieu/oci-free-cloud-k8s
   secretRef:
     name: fluxcd-github-token
 ---

@@ -50,3 +50,8 @@ variable "github_app_pem" {
   sensitive   = true
   type        = string
 }
+
+variable "gh_org" {
+  description = "Github organization"
+  type        = string
+}

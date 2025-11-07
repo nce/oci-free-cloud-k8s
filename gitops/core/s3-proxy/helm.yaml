@@ -33,15 +33,15 @@ spec:
       annotations:
         cert-manager.io/cluster-issuer: letsencrypt
         kubernetes.io/ingress.class: nginx
-        external-dns.alpha.kubernetes.io/hostname: s3.nce.wtf
+        external-dns.alpha.kubernetes.io/hostname: s3.jdani.eu
       hosts:
-        - host: s3.nce.wtf
+        - host: s3.jdani.eu
           paths:
             - path: /
               pathType: Prefix
       tls:
         - hosts:
-            - s3.nce.wtf
+            - s3.jdani.eu
           secretName: s3-cert
     prometheus:
       serviceMonitor:
@@ -59,8 +59,8 @@ spec:
               clientID: s3-proxy
               clientSecret:
                 env: S3_PROXY_DEX_CLIENT_SECRET
-              issuerUrl: https://login.nce.wtf/dex/
-              redirectUrl: https://s3.nce.wtf/
+              issuerUrl: https://login.jdani.eu/dex/
+              redirectUrl: https://s3.jdani.eu/
               scopes:
                 - openid
                 - profile
@@ -69,9 +69,9 @@ spec:
         targets:
           oracle:
             bucket:
-              name: tourenbuch
-              region: eu-frankfurt-1
-              s3Endpoint: https://frrwy4uskhkj.compat.objectstorage.eu-frankfurt-1.oci.customer-oci.com
+              name: s3.jdani.eu
+              region: eu-madrid-1
+              s3Endpoint: https://ax7cfee9ogw3.compat.objectstorage.eu-madrid-1.oci.customer-oci.com
               credentials:
                 accessKey:
                   env: AWS_ACCESS_KEY_ID
@@ -89,4 +89,4 @@ spec:
                 provider: dex
                 oidc:
                   authorizationAccesses:
-                    - group: nce-acme:admin
+                    - group: jdani-acme:admin

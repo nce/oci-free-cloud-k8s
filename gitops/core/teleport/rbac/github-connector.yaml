@@ -8,9 +8,9 @@ spec:
   client_secret: "secret://teleport-github-connector/teleport-github-client-secret"
   display: GitHub
   endpoint_url: ""
-  redirect_url: https://teleport.nce.wtf/v1/webapi/github/callback
+  redirect_url: https://teleport.jdani.eu/v1/webapi/github/callback
   teams_to_roles:
-    - organization: nce-acme
+    - organization: jdani-acme
       roles:
         - editor
         - admin
