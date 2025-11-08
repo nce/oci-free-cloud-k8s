@@ -8,6 +8,8 @@ YAML
 }
 
 resource "kubectl_manifest" "external_secrets_api_secret" {
+  depends_on = [kubectl_manifest.external_secrets_namespace]
+  
   yaml_body = <<YAML
 apiVersion: v1
 kind: Secret
