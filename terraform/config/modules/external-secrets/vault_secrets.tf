@@ -16,12 +16,14 @@ metadata:
   namespace: external-secrets
 type: Opaque
 data:
-  privateKey: ${base64encode(tls_private_key.external_secrets.private_key_pem)}
-  fingerprint: ${base64encode(oci_identity_api_key.external_secrets.fingerprint)}
+  privateKey: ${base64encode(var.external_secrets_api_private_key_pem)}
+  fingerprint: ${base64encode(var.external_secrets_api_fingerprint)}
 YAML
 }
 
 resource "kubectl_manifest" "external_secrets_cluster_store" {
+  depends_on = [kubectl_manifest.external_secrets_api_secret]
+  
   yaml_body = <<YAML
 apiVersion: external-secrets.io/v1
 kind: ClusterSecretStore
@@ -31,9 +33,9 @@ spec:
   provider:
     oracle:
       vault: ${var.vault_id}
-      region: eu-madrid-1
+      region: ${var.vault_region}
       auth:
-        user: ${oci_identity_user.external_secrets.id}
+        user: ${var.external_secrets_user_id}
         tenancy: ${var.tenancy_id}
         principalType: UserPrincipal
         secretRef:

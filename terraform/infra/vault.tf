@@ -97,12 +97,13 @@ resource "oci_identity_user_group_membership" "external_secrets" {
 
 # Policy mínima: leer bundles de secretos e inspeccionar vaults en el compartment
 resource "oci_identity_policy" "vault_read_policy" {
-  compartment_id = data.oci_identity_tenancy.current.id  # Use tenancy from data source
+  compartment_id = data.oci_identity_tenancy.current.id
   name           = "extsecrets-read-secret-bundles"
   description    = "Allow external-secrets to read secret bundles and inspect vaults"
   statements = [
-    "Allow group ${oci_identity_group.external_secrets.name} to read secret-bundles in compartment ${data.oci_identity_compartment.selected.name}",
-    "Allow group ${oci_identity_group.external_secrets.name} to inspect vaults in compartment ${data.oci_identity_compartment.selected.name}"
+    "Allow group ${oci_identity_group.external_secrets.name} to read secret-bundles in compartment id ${var.compartment_id}",
+    "Allow group ${oci_identity_group.external_secrets.name} to read secrets in compartment id ${var.compartment_id}",
+    "Allow group ${oci_identity_group.external_secrets.name} to inspect vaults in compartment id ${var.compartment_id}"
   ]
   freeform_tags = local.tags
 }
@@ -139,4 +140,12 @@ output "external_secrets_api_fingerprint" {
 output "external_secrets_api_private_key_pem" {
   value     = tls_private_key.extsecrets_api.private_key_pem
   sensitive = true
+}
+
+output "vault_region" {
+  value = var.region
+}
+
+output "external_secrets_tenancy_id" {
+  value = data.oci_identity_tenancy.current.id
 }

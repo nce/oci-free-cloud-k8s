@@ -1,9 +1,13 @@
 module "externalsecrets" {
   source = "./modules/external-secrets"
 
-  compartment_id = var.compartment_id
-  tenancy_id     = var.tenancy_id
-  vault_id       = var.vault_id
+  compartment_id                        = var.compartment_id
+  tenancy_id                            = var.tenancy_id
+  vault_id                              = var.vault_id
+  external_secrets_user_id              = var.external_secrets_user_id
+  external_secrets_api_fingerprint      = var.external_secrets_api_fingerprint
+  external_secrets_api_private_key_pem  = var.external_secrets_api_private_key_pem
+  vault_region                          = var.vault_region
 
   depends_on = [
     module.fluxcd
