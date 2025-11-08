@@ -30,6 +30,28 @@ variable "tenancy_id" {
   type        = string
 }
 
+variable "external_secrets_user_id" {
+  description = "External Secrets user OCID"
+  type        = string
+}
+
+variable "external_secrets_api_fingerprint" {
+  description = "External Secrets API key fingerprint"
+  type        = string
+}
+
+variable "external_secrets_api_private_key_pem" {
+  description = "External Secrets API private key PEM"
+  type        = string
+  sensitive   = true
+}
+
+variable "vault_region" {
+  description = "Region where the vault is located"
+  type        = string
+  default     = "eu-madrid-1"
+}
+
 variable "gh_token" {
   description = "Github PAT for FluxCD"
   type        = string
@@ -53,26 +75,5 @@ variable "github_app_pem" {
 
 variable "gh_org" {
   description = "Github organization"
-  type        = string
-}
-
-variable "external_secrets_user_id" {
-  description = "External Secrets user OCID"
-  type        = string
-}
-
-variable "external_secrets_api_fingerprint" {
-  description = "External Secrets API key fingerprint"
-  type        = string
-}
-
-variable "external_secrets_api_private_key_pem" {
-  description = "External Secrets API private key PEM"
-  type        = string
-  sensitive   = true
-}
-
-variable "vault_region" {
-  description = "Region where the vault is located"
   type        = string
 }
