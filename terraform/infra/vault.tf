@@ -103,7 +103,8 @@ resource "oci_identity_policy" "vault_read_policy" {
   statements = [
     "Allow group ${oci_identity_group.external_secrets.name} to read secret-bundles in compartment id ${var.compartment_id}",
     "Allow group ${oci_identity_group.external_secrets.name} to read secrets in compartment id ${var.compartment_id}",
-    "Allow group ${oci_identity_group.external_secrets.name} to inspect vaults in compartment id ${var.compartment_id}"
+    "Allow group ${oci_identity_group.external_secrets.name} to inspect vaults in compartment id ${var.compartment_id}",
+    "Allow group ${oci_identity_group.external_secrets.name} to use keys in compartment id ${var.compartment_id}"
   ]
   freeform_tags = local.tags
 }

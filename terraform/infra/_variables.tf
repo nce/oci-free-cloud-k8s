@@ -40,3 +40,25 @@ variable "kubernetes_worker_nodes" {
 
   default = 2
 }
+
+# Optional: Only needed if not using ~/.oci/config
+# variable "tenancy_ocid" {
+#   description = "OCI Tenancy OCID"
+#   type        = string
+# }
+# 
+# variable "user_ocid" {
+#   description = "OCI User OCID (your personal user, not external-secrets)"
+#   type        = string
+# }
+# 
+# variable "fingerprint" {
+#   description = "Fingerprint for your OCI API key"
+#   type        = string
+# }
+# 
+# variable "private_key_path" {
+#   description = "Path to your OCI private key"
+#   type        = string
+#   default     = "~/.oci/oci_api_key.pem"
+# }
