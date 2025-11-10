@@ -95,7 +95,7 @@ spec:
             clientSecret: $GITHUB_CLIENT_SECRET
             redirectURI: https://login.jdani.eu/dex/callback
             orgs:
-              - name: jdani-acme
+              - name: jdanieu
                 # A white list of teams. Only include group claims for these teams.
                 teams:
                   - admin

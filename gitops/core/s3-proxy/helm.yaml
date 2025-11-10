@@ -89,4 +89,4 @@ spec:
                 provider: dex
                 oidc:
                   authorizationAccesses:
-                    - group: jdani-acme:admin
+                    - group: jdanieu:admin

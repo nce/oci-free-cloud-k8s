@@ -51,7 +51,7 @@ spec:
         auth_url: https://login.jdani.eu/dex/auth
         token_url: https://login.jdani.eu/dex/token
         api_url: https://login.jdani.eu/dex/userinfo
-        role_attribute_path: contains(groups[*], 'jdani-acme:admin') && 'Admin' || 'Viewer'
+        role_attribute_path: contains(groups[*], 'jdanieu:admin') && 'Admin' || 'Viewer'
 
     extraSecretMounts:
       - name: dex-grafana-client
