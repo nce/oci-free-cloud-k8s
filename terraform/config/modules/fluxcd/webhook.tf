@@ -2,6 +2,15 @@ data "github_repository" "oci" {
   full_name = "${var.gh_org}/${var.gh_repository}"
 }
 
+# Vault correcto por nombre
+data "oci_kms_vaults" "selected" {
+  compartment_id = var.compartment_id
+  filter {
+    name   = "display_name"
+    values = ["home-vault"] # o var.vault_name
+  }
+}
+
 resource "random_password" "webhook_secret" {
   length  = 32
   special = false
@@ -13,7 +22,7 @@ data "oci_kms_vaults" "existing_vault" {
 
 data "oci_kms_keys" "existing_key" {
   compartment_id      = var.compartment_id
-  management_endpoint = data.oci_kms_vaults.existing_vault.vaults[0].management_endpoint
+  management_endpoint = data.oci_kms_vaults.selected.vaults[0].management_endpoint
 }
 
 resource "oci_vault_secret" "test_secret" {
@@ -21,7 +30,7 @@ resource "oci_vault_secret" "test_secret" {
   compartment_id = var.compartment_id
   key_id         = data.oci_kms_keys.existing_key.keys[0].id
   secret_name    = "fluxcd-github-webhook-token"
-  vault_id       = data.oci_kms_vaults.existing_vault.vaults[0].id
+  vault_id       = data.oci_kms_vaults.selected.vaults[0].id
 
   secret_content {
     name         = "token"
