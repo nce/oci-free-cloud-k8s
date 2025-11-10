@@ -97,9 +97,9 @@ spec:
             orgs:
               - name: jdanieu
                 # A white list of teams. Only include group claims for these teams.
-                teams:
-                  - admin
-                  - jdani
+                # teams:
+                #   - admin
+                #   - jdani
             # Flag which indicates that all user groups and teams should be loaded.
             loadAllGroups: false
 
