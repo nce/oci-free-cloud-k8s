@@ -17,7 +17,7 @@ locals {
   ext_group_name       = "grp-external-secrets"
 
   # Current key
-  current_extsecrets_api_key = tls_private_key.extsecrets_api_1762775891
+  current_extsecrets_api_key = tls_private_key.extsecrets_api_1762778416
 
   # Tags útiles
   tags = {
@@ -125,6 +125,13 @@ resource "tls_private_key" "extsecrets_api_1762775891" {
   algorithm = "RSA"
   rsa_bits  = 2048
 }
+
+
+resource "tls_private_key" "extsecrets_api_1762778416" {
+  algorithm = "RSA"
+  rsa_bits  = 2048
+}
+
 
 resource "oci_identity_api_key" "extsecrets_api" {
   user_id   = oci_identity_user.external_secrets.id
