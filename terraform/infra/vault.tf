@@ -16,6 +16,9 @@ locals {
   ext_user_email       = "external-secrets@jdani.eu"
   ext_group_name       = "grp-external-secrets"
 
+  # Current key
+  current_extsecrets_api_key = tls_private_key.extsecrets_api_1762775891
+
   # Tags útiles
   tags = {
     owner = "dani"
@@ -43,9 +46,9 @@ resource "oci_kms_vault" "vault" {
   freeform_tags = local.tags
 }
 
-############################
-# Clave maestra (CMK) AES-256 en HSM
-############################
+# ############################
+# # Clave maestra (CMK) AES-256 en HSM
+# ############################
 resource "oci_kms_key" "cmk" {
   compartment_id   = var.compartment_id
   display_name     = local.key_display_name
@@ -98,15 +101,12 @@ resource "oci_identity_user_group_membership" "external_secrets" {
 # Policy mínima: leer bundles de secretos e inspeccionar vaults en el compartment
 resource "oci_identity_policy" "vault_read_policy" {
   compartment_id = data.oci_identity_tenancy.current.id
-  name           = "extsecrets-read-secret-bundles"
-  description    = "Allow external-secrets to read secret bundles and inspect vaults"
+  name        = "eso-vault-read"
+  description = "ESO read vault + secrets"
   statements = [
-    "Allow group ${oci_identity_group.external_secrets.name} to read secret-bundles in compartment id ${var.compartment_id}",
-    "Allow group ${oci_identity_group.external_secrets.name} to read secrets in compartment id ${var.compartment_id}",
-    "Allow group ${oci_identity_group.external_secrets.name} to inspect vaults in compartment id ${var.compartment_id}",
-    "Allow group ${oci_identity_group.external_secrets.name} to use keys in compartment id ${var.compartment_id}"
+    "Allow group ${oci_identity_group.external_secrets.name} to read vaults in tenancy",
+    "Allow group ${oci_identity_group.external_secrets.name} to read secret-family in tenancy", 
   ]
-  freeform_tags = local.tags
 }
 
 ############################
@@ -117,9 +117,18 @@ resource "tls_private_key" "extsecrets_api" {
   rsa_bits  = 2048
 }
 
+
+############################
+# API key RSA para el usuario (fingerprint + private key)
+############################
+resource "tls_private_key" "extsecrets_api_1762775891" {
+  algorithm = "RSA"
+  rsa_bits  = 2048
+}
+
 resource "oci_identity_api_key" "extsecrets_api" {
   user_id   = oci_identity_user.external_secrets.id
-  key_value = tls_private_key.extsecrets_api.public_key_pem
+  key_value = local.current_extsecrets_api_key.public_key_pem
 }
 
 ############################
@@ -139,7 +148,7 @@ output "external_secrets_api_fingerprint" {
 
 # PEM sensible; úsalo solo para crear el Secret en Kubernetes y no lo subas a VCS
 output "external_secrets_api_private_key_pem" {
-  value     = tls_private_key.extsecrets_api.private_key_pem
+  value     = local.current_extsecrets_api_key.private_key_pem
   sensitive = true
 }
 

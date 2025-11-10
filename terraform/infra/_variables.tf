@@ -3,6 +3,11 @@ variable "compartment_id" {
   description = "The compartment to create the resources in"
 }
 
+variable "compartment_name" {
+  type        = string
+  description = "The compartment name to create the resources in"
+}
+
 variable "region" {
   description = "OCI region"
   type        = string
