@@ -92,4 +92,5 @@ spec:
                 provider: dex
                 oidc:
                   authorizationAccesses:
-                    - group: github:jdanieu:owners
+                    authorizationAccesses:
+                      - group: jdanieu:homearpa
