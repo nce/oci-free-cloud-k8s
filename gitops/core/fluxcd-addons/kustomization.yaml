@@ -7,5 +7,5 @@ resources:
   - receiver.yaml
   - provider.yaml
   - alert.yaml
-  - podmonitor.yaml
+ # - podmonitor.yaml
   - ingress.yaml
