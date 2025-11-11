@@ -14,7 +14,7 @@ metadata:
   name: slack
 spec:
   type: slack
-  channel: G2T1UTYCW
-  address: https://slack.com/api/chat.postMessage
+#  channel: G2T1UTYCW
+#  address: https://slack.com/api/chat.postMessage
   secretRef:
     name: fluxcd-slack-webhook
