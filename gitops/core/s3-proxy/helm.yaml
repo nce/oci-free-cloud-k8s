@@ -92,4 +92,4 @@ spec:
                 provider: dex
                 oidc:
                   authorizationAccesses:
-                    - group: jdanieu:admin
+                    - group: github:jdanieu:owners
