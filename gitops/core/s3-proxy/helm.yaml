@@ -46,6 +46,9 @@ spec:
     prometheus:
       serviceMonitor:
         enabled: true
+    image:
+      name: docker.io/oxynozeta/s3-proxy
+      tag: 4.18.1
     configFiles:
       config.yaml:
         log:
