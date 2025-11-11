@@ -92,5 +92,4 @@ spec:
                 provider: dex
                 oidc:
                   authorizationAccesses:
-                    authorizationAccesses:
                       - group: jdanieu:homearpa
