@@ -23,6 +23,38 @@ spec:
       interval: 5m
   releaseName: longhorn
   values:
+    image:
+      csi:
+        attacher:
+          registry: docker.io
+        livenessProbe:
+          registry: docker.io
+        nodeDriverRegistrar:
+          registry: docker.io
+        provisioner:
+          registry: docker.io
+        resizer:
+          registry: docker.io
+        snapshotter:
+          registry: docker.io
+      longhorn:
+        backingImageManager:
+          registry: docker.io
+        engine:
+          registry: docker.io
+        instanceManager:
+          registry: docker.io
+        manager:
+          registry: docker.io
+        shareManager:
+          registry: docker.io
+        supportBundleKit:
+          registry: docker.io
+        ui:
+          registry: docker.io  
+      openshift:
+        oauthProxy:
+          registry: docker.io
     defaultSettings:
       storageMinimalAvailablePercentage: '10'
     persistence:
