@@ -24,7 +24,7 @@ spec:
   releaseName: longhorn
   values:
     defaultSettings:
-      storageMinimalAvailablePercentage: 10
+      storageMinimalAvailablePercentage: '10'
     persistence:
       defaultClassReplicaCount: 2
     ingress:
