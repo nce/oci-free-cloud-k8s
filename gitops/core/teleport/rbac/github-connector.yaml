@@ -4,7 +4,7 @@ metadata:
   name: github-acme
 spec:
   api_endpoint_url: ""
-  client_id: Ov23liwc746YPjJ2zGLh
+  client_id: Ov23liZaMFzuti09EA6T
   client_secret: "secret://teleport-github-connector/teleport-github-client-secret"
   display: GitHub
   endpoint_url: ""
@@ -16,3 +16,4 @@ spec:
         - admin
         - auditor
       team: admin
+
