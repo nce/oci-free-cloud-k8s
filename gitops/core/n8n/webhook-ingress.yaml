@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+    external-dns.alpha.kubernetes.io/hostname: n8n-webhooks.jdani.eu
+  name: n8n-webhooks
+  namespace: n8n
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: n8n-webhooks.jdani.eu
+    http:
+      paths:
+      - backend:
+          service:
+            name: n8n
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - n8n-webhooks.jdani.eu
+    secretName: n8n-webhooks-https-cert
