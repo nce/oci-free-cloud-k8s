@@ -2,6 +2,7 @@ apiVersion: notification.toolkit.fluxcd.io/v1beta3
 kind: Alert
 metadata:
   name: github-writeback
+  namespace: flux-system
 spec:
   providerRef:
     name: github
@@ -9,12 +10,13 @@ spec:
   eventSources:
     - kind: Kustomization
       name: flux-system
-      namespace: flux-system
+      
 ---
 apiVersion: notification.toolkit.fluxcd.io/v1beta3
 kind: Alert
 metadata:
   name: slack-alert
+  namespace: flux-system
 spec:
   providerRef:
     name: slack
@@ -22,13 +24,9 @@ spec:
   eventSources:
     - kind: GitRepository
       name: '*'
-      namespace: flux-system
     - kind: Kustomization
       name: '*'
-      namespace: flux-system
     - kind: HelmRelease
       name: '*'
-      namespace: '*'
     - kind: HelmChart
       name: '*'
-      namespace: '*'
