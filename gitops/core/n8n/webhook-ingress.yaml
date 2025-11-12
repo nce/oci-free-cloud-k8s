@@ -17,7 +17,7 @@ spec:
             name: n8n
             port:
               number: 80
-        path: /
+        path: /webhook
         pathType: Prefix
   tls:
   - hosts:

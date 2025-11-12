@@ -15,76 +15,62 @@ metadata:
   name: n8n
   namespace: n8n
 spec:
+  driftDetection:
+    mode: enabled
   interval: 10m
   releaseName: n8n
   chartRef:
     kind: OCIRepository
     name: 8gears-n8n
   values:
-    config:
-      database:
-        type: sqlite
-
-    extraEnv:
-      WEBHOOK_URL: "https://n8n-webhooks.jdani.eu/"
-      GENERIC_TIMEZONE: "Europe/Madrid"
-      N8N_EDITOR_BASE_URL: "https://n8n.jdani.eu/"
-
-
-    # volumes:
-    # /n8n-config
-    # /home/node/.n8n
-    ## Common Kubernetes Config Settings
-    persistence:
-      ## If true, use a Persistent Volume Claim, If false, use emptyDir
-      ##
-      enabled: true
-      type: dynamic # what type volume, possible options are [existing, emptyDir, dynamic] dynamic for Dynamic Volume Provisioning, existing for using an existing Claim
-      ## Persistent Volume Storage Class
-      ## If defined, storageClassName: <storageClass>
-      ## If set to "-", storageClassName: "", which disables dynamic provisioning
-      ## If undefined (the default) or set to null, no storageClassName spec is
-      ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
-      ##   GKE, AWS & OpenStack)
-      ##
-      # storageClass: "longhorn"
-      ## PVC annotations
-      #
-      # If you need this annotation include it under values.yml file and pvc.yml template will add it.
-      # This is not maintained at Helm v3 anymore.
-      # https://github.com/8gears/n8n-helm-chart/issues/8
-      #
-      # annotations:
-      #   helm.sh/resource-policy: keep
-      #   k8up.io/backup: "true"
-
-      ## Persistent Volume Access Mode
-      ##
-      # accessModes:
-      #   - ReadWriteOnce
-      ## Persistent Volume size
-      ##
-      # size: 3Gi
-      ## Use an existing PVC
-      ##
-      existingClaim: n8n-data
-
-
-
     image:
       repository: docker.io/n8nio/n8n
       pullPolicy: IfNotPresent
+    main:    
+      config:
+        database:
+          type: sqlite
 
-    podAnnotations: { }
+      extraEnv:
+        WEBHOOK_URL:
+          value: "https://n8n-webhooks.jdani.eu"
+        N8N_PROXY_HOPS:
+          value: "1"
+        N8N_HOST:
+          value: "n8n.jdani.eu"
+        GENERIC_TIMEZONE:
+          value: "Europe/Madrid"
+        N8N_EDITOR_BASE_URL:
+          value: "https://n8n.jdani.eu"
+        DB_SQLITE_POOL_SIZE:
+          value: "5"
+        N8N_RUNNERS_ENABLED:
+          value: "true"
+        N8N_BLOCK_ENV_ACCESS_IN_NODES:
+          value: "true"
+        N8N_GIT_NODE_DISABLE_BARE_REPOS:
+          value: "true"
+
+      persistence:
+        enabled: true
+        type: dynamic
+        existingClaim: n8n-data
 
 
-    service:
-      type: ClusterIP
-      port: 8080
-      annotations: { }
+
+      podAnnotations: { }
+
+      service:
+        type: ClusterIP
+        port: 8080
+        annotations: { }
+
+    webhook:
+      enabled: false
 
     ingress:
       enabled: true
+      className: nginx
       annotations:
         cert-manager.io/cluster-issuer: letsencrypt
         external-dns.alpha.kubernetes.io/hostname: n8n.jdani.eu
