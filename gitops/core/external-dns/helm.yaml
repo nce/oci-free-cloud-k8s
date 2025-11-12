@@ -42,6 +42,7 @@ spec:
             key: apiKey
     extraArgs:
       - --exclude-target-net=10.0.0.0/8
+      - --cloudflare-proxied
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization

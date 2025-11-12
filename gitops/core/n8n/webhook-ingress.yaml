@@ -4,6 +4,7 @@ metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
     external-dns.alpha.kubernetes.io/hostname: n8n-webhooks.jdani.eu
+    external-dns.alpha.kubernetes.io/cloudflare-proxied: false
   name: n8n-webhooks
   namespace: n8n
 spec:
