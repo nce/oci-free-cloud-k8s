@@ -37,4 +37,3 @@ spec:
       name: '*'
     - kind: HelmChart
       name: '*'
-      mandarina: true
