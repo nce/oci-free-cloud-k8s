@@ -11,7 +11,7 @@ resources:
   - longhorn/flux.yaml
   # - lychee/flux.yaml
   - kube-prometheus-stack/flux.yaml
-  - teleport/flux.yaml
+  # - teleport/flux.yaml
   - ingress-nginx/flux.yaml
   - metrics-server/flux.yaml
   - fluxcd-addons/flux.yaml
