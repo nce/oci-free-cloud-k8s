@@ -74,6 +74,9 @@ spec:
       annotations:
         cert-manager.io/cluster-issuer: letsencrypt
         external-dns.alpha.kubernetes.io/hostname: n8n.jdani.eu
+        nginx.ingress.kubernetes.io/proxy-connect-timeout: "120"
+        nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+        nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
       hosts:
         - host: n8n.jdani.eu
           paths:

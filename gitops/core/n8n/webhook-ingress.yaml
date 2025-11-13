@@ -5,6 +5,9 @@ metadata:
     cert-manager.io/cluster-issuer: letsencrypt
     external-dns.alpha.kubernetes.io/hostname: n8n-webhooks.jdani.eu
     external-dns.alpha.kubernetes.io/cloudflare-proxied: false
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "120"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
   name: n8n-webhooks
   namespace: n8n
 spec:
