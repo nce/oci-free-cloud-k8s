@@ -1,6 +1,10 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: ingress-nginx
+namespace: envoy-gateway
 resources:
   - namespace.yaml
   - helm.yaml
+  - envoyproxy.yaml
+  - gateway.yaml
+  - certificate.yaml
+  - secret.yaml

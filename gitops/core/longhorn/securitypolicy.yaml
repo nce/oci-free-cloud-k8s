@@ -1,0 +1,17 @@
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: longhorn-ui
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: longhorn
+  oidc:
+    provider:
+      issuer: https://login.nce.wtf/dex/
+    clientID: envoy-gateway
+    clientSecret:
+      name: dex-envoy-client
+    redirectURL: "https://storage.nce.wtf/oauth2/callback"
+    logoutPath: "/logout"

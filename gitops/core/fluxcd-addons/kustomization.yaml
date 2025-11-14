@@ -8,4 +8,4 @@ resources:
   - provider.yaml
   - alert.yaml
   - podmonitor.yaml
-  - ingress.yaml
+  - httproute.yaml

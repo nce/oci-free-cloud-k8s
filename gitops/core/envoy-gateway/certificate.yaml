@@ -1,0 +1,11 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: wildcard-nce-wtf
+spec:
+  dnsNames:
+    - "*.nce.wtf"
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer
+  secretName: wildcard-nce-wtf-tls-cert

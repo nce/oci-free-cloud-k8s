@@ -4,7 +4,7 @@ provider "kubectl" {
 }
 
 provider "helm" {
-  kubernetes {
+  kubernetes = {
     config_path = "../.kube.config"
   }
 }
@@ -12,4 +12,3 @@ provider "helm" {
 provider "kubernetes" {
   config_path = "../.kube.config"
 }
-

@@ -21,7 +21,7 @@ module "fluxcd" {
 }
 
 module "ingress" {
-  source = "./modules/nginx-ingress"
+  source = "./modules/ingress"
 
   compartment_id = var.compartment_id
 }
