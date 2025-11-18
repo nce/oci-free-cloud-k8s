@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: evolution-api
+  namespace: evolution-api
+  labels:
+    app: evolution-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: evolution-api
+      component: api
+  template:
+    metadata:
+      labels:
+        app: evolution-api
+        component: api
+    spec:
+      containers:
+        - name: api
+          image: docker.io/evoapicloud/evolution-api:v2.3.6
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              name: http
+          volumeMounts:
+            - name: evolution-instances
+              mountPath: /evolution/instances
+          env:
+            - name: DATABASE_CONNECTION_URI
+              valueFrom:
+                secretKeyRef:
+                  name: evolution-api-postgresql-app
+                  key: uri
+          envFrom:
+            - configMapRef:
+                name: evolution-api-config
+            - secretRef:
+                name: evolution-api-global-key
+          resources:
+            requests:
+              memory: 600Mi
+              cpu: 100m
+            limits:
+              memory: 600Mi
+              cpu: 400m
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - |
+                  wget -qO- http://localhost:8080/ | grep -q '"status":200'
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+            successThreshold: 1
+
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - |
+                  wget -qO- http://localhost:8080/ | grep -q '"status":200'
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+            successThreshold: 1
+      volumes:
+        - name: evolution-instances
+          persistentVolumeClaim:
+            claimName: evolution-api-data
