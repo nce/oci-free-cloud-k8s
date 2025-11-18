@@ -60,3 +60,4 @@ tags
 README_jdani.eu.md
 .envrc
 kubeconfig.yaml
+.vscode
