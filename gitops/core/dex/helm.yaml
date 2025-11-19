@@ -33,6 +33,8 @@ spec:
           name: dex-grafana-client
       - secretRef:
           name: dex-s3-proxy-client
+      - secretRef:
+          name: dex-freshrss-client
     replicaCount: 2
     https:
       enabled: false
@@ -83,6 +85,12 @@ spec:
           secretEnv: grafana.client-secret
           redirectURIs:
             - https://monitoring.jdani.eu/login/generic_oauth
+        - name: FreshRSS
+          IDEnv: freshrss.client-id
+          secretEnv: freshrss.client-secret
+          redirectURIs:
+            - https://rss.jdani.eu/i/oidc/
+            - https://rss.jdani.eu:443/i/oidc/
       connectors:
         - type: github
           # Required field for connector id.

@@ -1,0 +1,31 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+    external-dns.alpha.kubernetes.io/hostname: rss.jdani.eu
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "120"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+  labels:
+    app.kubernetes.io/instance: rss
+    app.kubernetes.io/name: rss
+  name: rss
+  namespace: rss
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: rss.jdani.eu
+    http:
+      paths:
+      - backend:
+          service:
+            name: freshrss
+            port:
+              number: 8080
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - rss.jdani.eu
+    secretName: rss-https-cert
