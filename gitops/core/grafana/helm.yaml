@@ -64,19 +64,7 @@ spec:
       - oci-metrics-datasource
 
     ingress:
-      enabled: true
-      hosts:
-        - monitoring.nce.wtf
-      annotations:
-        cert-manager.io/cluster-issuer: letsencrypt
-        kubernetes.io/ingress.class: nginx
-        #nginx.ingress.kubernetes.io/limit-connections: "10"
-        #nginx.ingress.kubernetes.io/limit-rps: "100"
-        external-dns.alpha.kubernetes.io/hostname: monitoring.nce.wtf
-      tls:
-        - hosts:
-            - monitoring.nce.wtf
-          secretName: grafana-cert
+      enabled: false
     sidecar:
       dashboards:
         enabled: true

@@ -29,20 +29,7 @@ spec:
       - secretRef:
           name: s3-proxy-dex-client
     ingress:
-      enabled: true
-      annotations:
-        cert-manager.io/cluster-issuer: letsencrypt
-        kubernetes.io/ingress.class: nginx
-        external-dns.alpha.kubernetes.io/hostname: s3.nce.wtf
-      hosts:
-        - host: s3.nce.wtf
-          paths:
-            - path: /
-              pathType: Prefix
-      tls:
-        - hosts:
-            - s3.nce.wtf
-          secretName: s3-cert
+      enabled: false
     prometheus:
       serviceMonitor:
         enabled: true

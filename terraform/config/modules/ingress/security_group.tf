@@ -3,9 +3,6 @@ data "oci_core_vcns" "k8s_vcn" {
 
   display_name = "k8s-vcn"
 }
-output "foo" {
-  value = data.oci_core_vcns.k8s_vcn
-}
 
 resource "oci_core_network_security_group" "ingress_lb" {
   #Required

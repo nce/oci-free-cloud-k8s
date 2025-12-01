@@ -4,16 +4,17 @@ This repository leverages Oracle Cloud's [always free tier][oci-free-tier] to pr
 In its current setup there are **no monthly costs** anymore, as I've now moved
 the last part (DNS) from oci to cloudflare.
 
-[oci-free-tier]: https://blogs.oracle.com/cloud-infrastructure/post/oracle-builds-out-their-portfolio-of-oracle-cloud-infrastructure-always-free-services
+[oci-free-tier]: https://docs.oracle.com/en-us/iaas/Content/FreeTier/freetier_topic-Always_Free_Resources.htm
 
 Oracle Kubernetes Engine (OKE) is free to use, and you only pay for worker
 nodes _if_ you exceed the Always Free tier — which we don’t.
 The free tier provides **4 oCPUs and 24GB of memory**, which are split between two
 worker nodes (`VM.Standard.A1.Flex`), allowing for efficient resource
 utilization. Each node has a 100GB boot volume, with around 60GB available for
-in-cluster storage via Longhorn. For ingress, we use `k8s.io/nginx` with Oracle’s
-Flexible Load Balancer (10Mbps; layer 7), for `teleport` we use the network LB (layer 4),
-as both are free as well.
+in-cluster storage via Longhorn. For ingress, we use the `GatewayAPI` implementation
+provided by envoy-gateway together with Oracle’s
+Flexible Load Balancer (10Mbps; layer 7). For `teleport` we use the network LB (layer 4).
+In this configuration both load balancers are free to use.
 
 Getting an Always Free account can sometimes be tricky, but there are several
 guides on Reddit that explain how to speed up the creation process.
@@ -39,11 +40,12 @@ This repo hosts my personal stuff and is a playground for my kubernetes tooling.
 
 - [x] K8s control plane
 - [x] Worker Nodes
-- [x] Ingress
-  * nginx-ingress controller on a layer 7 lb
+- [x] Ingress with GatewayAPI
+  * envoy-gateway on a layer 7 lb
   * teleport svc on a layer 4 lb
+  * `httproutes` with oidc protection
 - [x] Certmanager
-  * with letsencrypt for dns & http challenge
+  * with letsencrypt setup for cloudflare dns challenge
 - [x] External DNS
   * with sync to the cloudflare dns management
   * CR to provide `A` records for my home-network
@@ -55,7 +57,7 @@ This repo hosts my personal stuff and is a playground for my kubernetes tooling.
   * flux → github commit annotation about conciliation status
 - [x] Teleport for k8s cluster access
 - [x] Storage
-   * with longhorn (rook/ceph & piraeus didn't work out)
+   * with longhorn
 - [x] Grafana with Dex Login
    * Dashboards for Flux
    * [ ] Switch to Grafana Operator
@@ -100,8 +102,8 @@ aws_secret_access_key = xxx <- this needs to be created via UI: User -> customer
 Refer to my [backend config](./terraform/infra/_terraform.tf) for the terraform s3 configuration.
 
 ## 🏗️ Terraform Layout
-* The infrastructure (everything to a usable k8s-api endpoint) is managed by
-terrafom in [infra](terraform/infra/)
+* The infrastructure (everything to an usable k8s-api endpoint) is managed by
+terraform in [infra](terraform/infra/)
 * The k8s-modules (OCI specific config for secrets etc.) are managed by terraform in [config](terraform/config/)
 * The k8s apps/config is done with flux; see below
 
@@ -213,16 +215,37 @@ cloudflare, i've removed all `http01` challenges. The renewal process with
 
 Switching to `dns` challenge solves this issue.
 
-### LB setup
+### Known Issues
+```
+❯ tsh kube login oci
+ERROR: connection error: desc = "transport: authentication handshake failed: tls: failed to verify certificate: x509: certificate signed by unknown authority"
+```
+When reinstalling teleport, during a logged in session happens, the tsh Client
+throws this error. A logout & login has to happen.
 
-> [!WARNING]
-> Todo: write about the svc/ingress annotations of the security groups
+## Gateway API - Loadbalancer setup
+With the recent deprecation of the `nginx-ingress` project, i [switched][pr] to
+[GatewayAPI][gatewayapi]. All `ingress` resources are replaced by `httproutes`.
+I chose the [envoy-gateway][envoy-gateway] implementation, as they feature
+`SecurityPolicies` which allow the protection of `httproutes` with OIDC auth.
+
+With orcale providing a layer 7 loadbalancer, the oci-controller needs to
+know which securitygroup should be associated with the lb. This is done by
+annotating the Service. Using envoy, we have to add the annotations on an
+`EnvoyProxy` CR. Unfortunately the value for the sg is created via terraform,
+but is later needed on the object. In the past i used to write it in a configmap,
+and helm was able to use the CM as value.yaml and annotated the resource.
+This is now no longer possible, therefore the sg is currently hardcoded.
+
+[pr]: https://github.com/nce/oci-free-cloud-k8s/pull/152
+[gatewayapi]: https://gateway-api.sigs.k8s.io/
+[envoy-gateway]: https://gateway.envoyproxy.io/
 
 ## Monitoring
 
 # :money_with_wings: Cost
 Overview of my monthly costs:
-![](docs/cost.aug.oct.22.png)
+![](docs/cost.25.png)
 
 # :books: Docs
 A collection of relevant upstream documentation for reference

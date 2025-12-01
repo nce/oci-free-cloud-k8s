@@ -33,24 +33,13 @@ spec:
           name: dex-grafana-client
       - secretRef:
           name: dex-s3-proxy-client
+      - secretRef:
+          name: dex-envoy-client
     replicaCount: 2
     https:
       enabled: false
     ingress:
-      enabled: true
-      hosts:
-        - host: login.nce.wtf
-          paths:
-            - path: /
-              pathType: Prefix
-      annotations:
-        cert-manager.io/cluster-issuer: letsencrypt
-        kubernetes.io/ingress.class: nginx
-        external-dns.alpha.kubernetes.io/hostname: login.nce.wtf
-      tls:
-        - hosts:
-            - login.nce.wtf
-          secretName: dex-cert
+      enabled: false
     config:
       issuer: https://login.nce.wtf/dex/
       # The storage configuration determines where dex stores its state. Supported
@@ -73,6 +62,12 @@ spec:
       #
       # If this option isn't chosen clients may be added through the gRPC API.
       staticClients:
+        - name: Envoy
+          IDEnv: envoy.client-id
+          secretEnv: envoy.client-secret
+          redirectURIs:
+            - https://storage.nce.wtf/oauth2/callback
+            - https://prometheus.nce.wtf/oauth2/callback
         - name: S3Proxy
           IDEnv: s3proxy.client-id
           secretEnv: s3proxy.client-secret

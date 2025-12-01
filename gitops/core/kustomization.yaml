@@ -12,7 +12,7 @@ resources:
   - lychee/flux.yaml
   - kube-prometheus-stack/flux.yaml
   - teleport/flux.yaml
-  - ingress-nginx/flux.yaml
   - metrics-server/flux.yaml
   - fluxcd-addons/flux.yaml
   - s3-proxy/flux.yaml
+  - envoy-gateway/flux.yaml

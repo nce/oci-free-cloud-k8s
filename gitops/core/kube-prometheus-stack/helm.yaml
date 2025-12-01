@@ -32,7 +32,7 @@ spec:
   values:
     prometheus:
       ingress:
-        enabled: true
+        enabled: false
         hosts:
           - prometheus.nce.wtf
         tls:

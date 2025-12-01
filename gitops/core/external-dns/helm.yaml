@@ -32,6 +32,7 @@ spec:
       - service
       - ingress
       - crd
+      - gateway-httproute
     managedRecordTypes:
       - A
     env:
