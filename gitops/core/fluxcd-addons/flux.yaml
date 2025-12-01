@@ -9,7 +9,6 @@ spec:
   prune: true
   dependsOn:
     - name: external-secrets
-    - name: ingress-nginx
   sourceRef:
     kind: GitRepository
     name: flux-system
