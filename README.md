@@ -1,5 +1,11 @@
 # ⎈ Oracle Cloud Kubernetes free tier setup
 
+> [!WARNING]
+> **Free Tier Change: 06.2026**
+>
+> Oracle changed the free-tier specs from former 4 oCPUS & 24GB
+> down to **2 oCPU and 12GB memory**. Please update your setups to avoid cost
+
 This repository leverages Oracle Cloud's [always free tier][oci-free-tier] to provision a kubernetes cluster.
 In its current setup there are **no monthly costs** anymore, as I've now moved
 the last part (DNS) from oci to cloudflare.
@@ -8,7 +14,7 @@ the last part (DNS) from oci to cloudflare.
 
 Oracle Kubernetes Engine (OKE) is free to use, and you only pay for worker
 nodes _if_ you exceed the Always Free tier — which we don’t.
-The free tier provides **4 oCPUs and 24GB of memory**, which are split between two
+The free tier provides **2 oCPUs and 12GB of memory**, which are split between two
 worker nodes (`VM.Standard.A1.Flex`), allowing for efficient resource
 utilization. Each node has a 100GB boot volume, with around 60GB available for
 in-cluster storage via Longhorn. For ingress, we use the `GatewayAPI` implementation

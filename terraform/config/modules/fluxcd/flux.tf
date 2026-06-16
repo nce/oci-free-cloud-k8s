@@ -46,6 +46,13 @@ instance:
   distribution:
     version: ${var.flux_version}
     registry: ${var.flux_registry}
+  components:
+    - source-controller
+    - kustomize-controller
+    - helm-controller
+    - notification-controller
+    - image-automation-controller
+    - image-reflector-controller
   sync:
     kind: GitRepository
     url: ${var.git_url}
