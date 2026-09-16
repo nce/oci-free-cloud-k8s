@@ -15,3 +15,16 @@ spec:
       name: dex-envoy-client
     redirectURL: "https://prometheus.nce.wtf/oauth2/callback"
     logoutPath: "/logout"
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: prometheus-remote-write
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: prometheus-remote-write
+  basicAuth:
+    users:
+      name: prometheus-remote-write-basic-auth
