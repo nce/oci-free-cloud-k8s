@@ -4,6 +4,7 @@ module "externalsecrets" {
   compartment_id = var.compartment_id
   tenancy_id     = var.tenancy_id
   vault_id       = var.vault_id
+  vault_key_id   = var.vault_key_id
 
   depends_on = [
     module.fluxcd

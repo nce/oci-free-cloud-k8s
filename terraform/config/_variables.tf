@@ -25,6 +25,12 @@ variable "vault_id" {
   type        = string
 }
 
+variable "vault_key_id" {
+  description = "OCI Vault encryption key OCID"
+  type        = string
+  default     = null
+}
+
 variable "tenancy_id" {
   description = "Tenancy OCID"
   type        = string
