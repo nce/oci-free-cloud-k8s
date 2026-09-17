@@ -23,6 +23,8 @@ spec:
       interval: 5m
   releaseName: longhorn
   values:
+    global:
+      imageRegistry: docker.io
     defaultSettings:
       storageMinimalAvailablePercentage: 10
     persistence:
