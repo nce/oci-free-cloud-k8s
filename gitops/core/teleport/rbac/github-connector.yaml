@@ -4,15 +4,15 @@ metadata:
   name: github-acme
 spec:
   api_endpoint_url: ""
-  client_id: Ov23liwc746YPjJ2zGLh
+  client_id: ${teleport_github_client_id}
   client_secret: "secret://teleport-github-connector/teleport-github-client-secret"
   display: GitHub
   endpoint_url: ""
-  redirect_url: https://teleport.nce.wtf/v1/webapi/github/callback
+  redirect_url: https://teleport.${cluster_domain}/v1/webapi/github/callback
   teams_to_roles:
-    - organization: nce-acme
+    - organization: ${github_org}
       roles:
         - editor
         - admin
         - auditor
-      team: admin
+      team: ${github_team}

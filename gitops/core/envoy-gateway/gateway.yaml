@@ -18,7 +18,7 @@ spec:
   gatewayClassName: envoy
   listeners:
     - name: https
-      hostname: "*.nce.wtf"
+      hostname: "*.${cluster_domain}"
       protocol: HTTPS
       port: 443
       allowedRoutes:

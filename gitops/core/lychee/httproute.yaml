@@ -7,7 +7,7 @@ spec:
     - name: contour-gateway
       namespace: contour
   hostnames:
-    - "img.nce.wtf"
+    - "img.${cluster_domain}"
   rules:
     - matches:
         - path:
