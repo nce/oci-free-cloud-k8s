@@ -7,7 +7,7 @@ spec:
     - name: envoy
       namespace: envoy-gateway
   hostnames:
-    - "prometheus.nce.wtf"
+    - "prometheus.${cluster_domain}"
   rules:
     - matches:
         - path:
@@ -26,7 +26,7 @@ spec:
     - name: envoy
       namespace: envoy-gateway
   hostnames:
-    - "prometheus-write.nce.wtf"
+    - "prometheus-write.${cluster_domain}"
   rules:
     - matches:
         - path:

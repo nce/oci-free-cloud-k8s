@@ -1,0 +1,16 @@
+# Site-specific values. Flux replaces ${name} in the manifests with the values below.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cluster-vars
+  namespace: flux-system
+data:
+  cluster_domain: nce.wtf
+  acme_email: 770135+nce@users.noreply.github.com
+  github_repository: nce/oci-free-cloud-k8s
+  github_org: nce-acme
+  github_team: admin
+  teleport_github_client_id: Ov23liwc746YPjJ2zGLh
+  lb_security_group_id: ocid1.networksecuritygroup.oc1.eu-frankfurt-1.aaaaaaaauxhghg36xuzzjgw2awsd3cv4p2f2jedr5palq6fpy4exd53tve5a
+  oci_region: eu-frankfurt-1
+  oci_object_storage_namespace: frrwy4uskhkj

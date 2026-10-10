@@ -7,7 +7,7 @@ spec:
     - name: envoy
       namespace: envoy-gateway
   hostnames:
-    - "flux-webhook.nce.wtf"
+    - "flux-webhook.${cluster_domain}"
   rules:
     - matches:
         - path:

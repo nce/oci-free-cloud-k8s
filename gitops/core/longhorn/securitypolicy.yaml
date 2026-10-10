@@ -9,9 +9,9 @@ spec:
       name: longhorn
   oidc:
     provider:
-      issuer: https://login.nce.wtf/dex/
+      issuer: https://login.${cluster_domain}/dex/
     clientID: envoy-gateway
     clientSecret:
       name: dex-envoy-client
-    redirectURL: "https://storage.nce.wtf/oauth2/callback"
+    redirectURL: "https://storage.${cluster_domain}/oauth2/callback"
     logoutPath: "/logout"
