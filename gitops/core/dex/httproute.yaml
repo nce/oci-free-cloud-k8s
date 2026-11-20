@@ -7,7 +7,7 @@ spec:
     - name: envoy
       namespace: envoy-gateway
   hostnames:
-    - "login.nce.wtf"
+    - "login.${cluster_domain}"
   rules:
     - matches:
         - path:

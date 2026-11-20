@@ -7,7 +7,7 @@ spec:
     - name: envoy
       namespace: envoy-gateway
   hostnames:
-    - "monitoring.nce.wtf"
+    - "monitoring.${cluster_domain}"
   rules:
     - matches:
         - path:

@@ -173,6 +173,17 @@ Switching to a feature/dev branch is rather simple, just modify the
 inCluster `FluxInstance` - search for the `sync` block and update the `ref`
 section to the according branch.
 
+### Site-specific values
+All values that differ between clusters are in one file,
+[gitops/core/cluster-vars.yaml](gitops/core/cluster-vars.yaml): the domain,
+the GitHub organization, the loadbalancer securitygroup and so on.
+Flux replaces `${name}` in the manifests with the values from this file
+([post build substitution][flux-substitution]).
+
+If you fork this repo, change the values in this file and nothing else in `gitops/`.
+
+[flux-substitution]: https://fluxcd.io/flux/components/kustomize/kustomizations/#post-build-variable-substitution
+
 ## Teleport
 [Teleport](https://goteleport.com/) is my preferred way to access the kuberentes api
 ### Prerequisites

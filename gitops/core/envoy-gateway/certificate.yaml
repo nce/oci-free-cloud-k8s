@@ -4,7 +4,7 @@ metadata:
   name: wildcard-nce-wtf
 spec:
   dnsNames:
-    - "*.nce.wtf"
+    - "*.${cluster_domain}"
   issuerRef:
     name: letsencrypt
     kind: ClusterIssuer

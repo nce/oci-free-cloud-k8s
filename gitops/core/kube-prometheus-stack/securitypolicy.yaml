@@ -9,11 +9,11 @@ spec:
       name: prometheus
   oidc:
     provider:
-      issuer: https://login.nce.wtf/dex/
+      issuer: https://login.${cluster_domain}/dex/
     clientID: envoy-gateway
     clientSecret:
       name: dex-envoy-client
-    redirectURL: "https://prometheus.nce.wtf/oauth2/callback"
+    redirectURL: "https://prometheus.${cluster_domain}/oauth2/callback"
     logoutPath: "/logout"
 ---
 apiVersion: gateway.envoyproxy.io/v1alpha1
